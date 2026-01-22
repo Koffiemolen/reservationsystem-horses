@@ -1,0 +1,182 @@
+// Prisma schema for Stichting Manege de Raam Reservation System
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================================
+// MODELS
+// ============================================================================
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  passwordHash  String
+  name          String
+  phone         String?
+  phoneConsent  Boolean   @default(false)
+  role          String    @default("USER") // USER, ORGANIZER, ADMIN
+  status        String    @default("ACTIVE") // ACTIVE, DISABLED
+
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  reservations    Reservation[]
+  createdBlocks   Block[]         @relation("BlockCreatedBy")
+  createdEvents   Event[]         @relation("EventCreatedBy")
+  auditLogs       AuditLog[]
+  sessions        Session[]
+  passwordResets  PasswordReset[]
+
+  @@index([email])
+  @@index([status])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model PasswordReset {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([token])
+  @@index([userId])
+}
+
+model Resource {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  isActive    Boolean  @default(true)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  reservations Reservation[]
+  blocks       Block[]
+  events       EventResource[]
+}
+
+model Reservation {
+  id           String    @id @default(cuid())
+  userId       String
+  resourceId   String
+  startTime    DateTime
+  endTime      DateTime
+  purpose      String    // TRAINING, LESSON, OTHER
+  notes        String?
+  status       String    @default("CONFIRMED") // CONFIRMED, CANCELLED, IMPACTED
+
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  cancelledAt  DateTime?
+  cancelReason String?
+
+  // Relations
+  user         User      @relation(fields: [userId], references: [id])
+  resource     Resource  @relation(fields: [resourceId], references: [id])
+
+  // Indexes for calendar queries
+  @@index([resourceId, startTime, endTime])
+  @@index([userId, startTime])
+  @@index([status])
+}
+
+model Block {
+  id             String   @id @default(cuid())
+  resourceId     String
+  reason         String
+  startTime      DateTime
+  endTime        DateTime
+  isRecurring    Boolean  @default(false)
+  recurrenceRule String?  // RRULE format for recurring blocks
+
+  createdById    String
+  createdAt      DateTime @default(now())
+
+  // Relations
+  resource       Resource @relation(fields: [resourceId], references: [id])
+  createdBy      User     @relation("BlockCreatedBy", fields: [createdById], references: [id])
+
+  @@index([resourceId, startTime, endTime])
+}
+
+model Event {
+  id          String    @id @default(cuid())
+  title       String
+  description String?
+  startTime   DateTime
+  endTime     DateTime
+  visibility  String    @default("PUBLIC") // PUBLIC, MEMBERS, ADMIN
+
+  createdById String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  // Relations
+  createdBy   User            @relation("EventCreatedBy", fields: [createdById], references: [id])
+  resources   EventResource[]
+
+  @@index([startTime, endTime])
+  @@index([visibility])
+}
+
+model EventResource {
+  eventId    String
+  resourceId String
+
+  event      Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  resource   Resource @relation(fields: [resourceId], references: [id])
+
+  @@id([eventId, resourceId])
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  userId     String?
+  action     String   // CREATE, UPDATE, DELETE, CANCEL, DISABLE
+  entityType String
+  entityId   String
+  changes    String?  // JSON string for SQLite
+
+  createdAt  DateTime @default(now())
+
+  // Relations
+  user       User?    @relation(fields: [userId], references: [id])
+
+  @@index([entityType, entityId])
+  @@index([createdAt])
+}
+
+model ContactSubmission {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  phone     String?
+  subject   String
+  message   String
+  status    String   @default("NEW") // NEW, READ, REPLIED
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([status])
+}
