@@ -4,21 +4,19 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Development Commands
 
-### Database
 ```bash
-npm run db:push          # Push schema changes to database
-npm run db:migrate       # Create and run migrations
+npm run dev              # Start development server (localhost:3000)
+npm run build            # Build for production (runs prisma generate first)
+npm run start            # Start production server
+npm run lint             # Run ESLint
+
+npm run db:push          # Push schema changes to database (dev, no migration file)
+npm run db:migrate       # Create and run migrations (use for schema changes)
 npm run db:seed          # Seed database with test data
 npm run db:studio        # Open Prisma Studio (database GUI)
 ```
 
-### Development
-```bash
-npm run dev              # Start development server (localhost:3000)
-npm run build            # Build for production (includes Prisma generate)
-npm run start            # Start production server
-npm run lint             # Run ESLint
-```
+**No test suite exists.** There is no Jest/Vitest configuration and no test files. Do not look for or rely on tests.
 
 ### Test Accounts (after seeding)
 - Admin: `admin@stichtingderaam.nl` / `Admin123!@#`
@@ -54,25 +52,35 @@ export async function POST(request) {
 
 ### Critical Business Logic
 
-**Overlap System**: Reservations allow overlaps with warnings, NOT blocking. This is the core booking model.
+**Overlap System**: Reservations allow overlaps with warnings, NOT blocking. This is the core booking model. There are two parallel confirmation flows — one for reservations, one for blocks — that follow the same throw-and-parse pattern:
 
 ```typescript
-// Two types of time conflicts:
-// 1. Blocks (maintenance/closures) - HARD BLOCK, prevent booking
-// 2. Overlapping reservations - SOFT WARNING, allow with acknowledgement
-
+// RESERVATION flow (reservation.service.ts):
+// 1. Blocks → HARD BLOCK, prevent booking (HTTP 409)
+// 2. Overlapping reservations → SOFT WARNING, allow with acknowledgeOverlap flag
 if (overlapResult.hasBlock) {
   throw new Error(`TIME_BLOCKED:${JSON.stringify(block)}`)
 }
 if (overlapResult.hasOverlaps && !data.acknowledgeOverlap) {
   throw new Error(`OVERLAP_EXISTS:${JSON.stringify(overlaps)}`)
+  // NOTE: API route returns this as HTTP 200 with warning field, NOT a 4xx error
 }
+
+// BLOCK flow (block.service.ts):
+// If a new block would affect existing CONFIRMED reservations, warn first
+if (conflicts.length > 0 && !confirmConflicts) {
+  throw new Error(`CONFLICTS_EXIST:${JSON.stringify(conflicts)}`)
+}
+// When confirmed, conflicting reservations are set to IMPACTED status
+// and affected users receive email notifications
 ```
+
+When a block is **deleted**, all IMPACTED reservations overlapping that block are automatically restored to CONFIRMED.
 
 **Privacy**: Calendar shows other users' reservations as "Reserved" without names/details. Only show full details for the current user's own reservations.
 
 ```typescript
-// src/services/reservation.service.ts:getReservationsForCalendar
+// src/services/reservation.service.ts — getReservationsForCalendar
 return reservations.map((r) => ({
   id: r.id,
   startTime: r.startTime,
@@ -98,6 +106,7 @@ Three roles defined: `USER`, `ORGANIZER`, `ADMIN`
 Middleware (`src/middleware.ts`) handles route protection:
 - `/agenda`, `/profiel`, `/reserveringen` - Require authentication
 - `/admin/*` - Require ADMIN role
+- `/api/*` routes are **excluded from middleware** (matcher skips them). Each API route handler calls `auth()` itself to check the session.
 
 ### Time Handling
 
@@ -109,6 +118,8 @@ Emails sent via Resend service (`src/services/email.service.ts`):
 - Reservation confirmation
 - Reservation cancellation
 - Password reset
+- Welcome (on registration)
+- Block notification (when a new block impacts existing reservations — sent per affected user, grouping their affected reservations)
 - Account disabled notification
 
 In development, emails are logged to console if `RESEND_API_KEY` is not set.
@@ -118,29 +129,26 @@ In development, emails are logged to console if `RESEND_API_KEY` is not set.
 ```
 src/
 ├── app/                      # Next.js App Router
-│   ├── (public)/            # Public pages
-│   ├── (auth)/              # Auth pages
-│   ├── (dashboard)/         # User dashboard
-│   ├── (admin)/             # Admin panel
-│   ├── api/                 # API routes (thin controllers)
-│   └── layout.tsx
+│   ├── (public)/            # Public pages (home, contact, events, over-ons)
+│   ├── (auth)/              # Auth pages (login, register, password reset)
+│   ├── (dashboard)/         # User pages (agenda, reserveringen, profiel)
+│   ├── (admin)/             # Admin pages (dashboard, gebruikers)
+│   └── api/                 # API route handlers — thin controllers only
 ├── components/
 │   ├── ui/                  # shadcn/ui components
-│   ├── calendar/            # Calendar views
-│   ├── reservations/        # Reservation forms
+│   ├── calendar/            # CalendarView, MonthView, WeekView, DayView, ReservationCard, BlockIndicator
+│   ├── reservations/        # ReservationForm, OverlapWarning
 │   ├── admin/               # Admin components
-│   └── layout/              # Header, Footer
-├── lib/                     # Utilities, auth, DB client
-│   ├── auth.ts              # Auth.js configuration
-│   ├── db.ts                # Prisma client singleton
-│   └── validators.ts        # Zod schemas
-├── services/                # Business logic (IMPORTANT)
-│   ├── reservation.service.ts
-│   ├── block.service.ts
-│   ├── event.service.ts
-│   ├── user.service.ts
-│   ├── email.service.ts
-│   └── audit.service.ts
+│   └── layout/              # Header, PublicHeader, Footer
+├── hooks/                   # Custom React hooks (useCalendar)
+├── lib/                     # Auth config, DB client, Zod validators, utils, constants
+├── services/                # Business logic — all domain logic lives here
+│   ├── reservation.service.ts   # Core booking logic & overlap checks
+│   ├── block.service.ts         # Admin blocks & IMPACTED reservation handling
+│   ├── event.service.ts         # Event CRUD
+│   ├── user.service.ts          # User management (disable cascades cancellations)
+│   ├── email.service.ts         # All email templates & sending
+│   └── audit.service.ts         # Audit log writes & queries
 └── types/                   # TypeScript types
 ```
 
@@ -159,7 +167,7 @@ src/
 - Event visibility: `PUBLIC`, `MEMBERS`, `ADMIN`
 
 **Soft Deletes**: Users and reservations use status fields instead of hard deletes:
-- Users: `status = 'DISABLED'`
+- Users: `status = 'DISABLED'` — disabling a user also cancels all their future CONFIRMED reservations in the same transaction
 - Reservations: `status = 'CANCELLED'` with `cancelledAt` timestamp
 
 ## Important Constraints
