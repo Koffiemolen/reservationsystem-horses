@@ -85,6 +85,25 @@ export default function EvenementenPage() {
         </div>
       </section>
 
+      {/* Competition Info Bar */}
+      <div className="bg-green-50 border-b border-green-200">
+        <div className="container mx-auto px-4 py-4">
+          <p className="text-sm text-green-800 text-center">
+            Bijna iedere maand worden dressuurwedstrijden georganiseerd voor
+            pony's en paarden. Klassen: BB, B, L1, L2, M1, M2 (zomer: ook Z).
+            Inschrijving via{' '}
+            <a
+              href="https://mijnknhs.nl"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline"
+            >
+              mijnknhs.nl
+            </a>
+          </p>
+        </div>
+      </div>
+
       {/* Content */}
       <div className="container mx-auto px-4 py-12">
         {loading ? (
@@ -216,8 +235,9 @@ export default function EvenementenPage() {
                 Wilt u deelnemen aan een evenement?
               </h3>
               <p className="text-gray-600 mb-6">
-                Neem contact met ons op voor meer informatie over aanmelding
-                en deelname aan onze evenementen.
+                Voor wedstrijden: inschrijving via mijnknhs.nl. Voor vragen
+                over evenementen neem contact op via wedstrijdderaam@live.nl
+                of registreer een account om reserveringen te maken.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <Button asChild className="bg-green-600 hover:bg-green-700">

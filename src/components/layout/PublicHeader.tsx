@@ -11,6 +11,7 @@ import { cn } from '@/lib/utils'
 const navItems = [
   { href: '/', label: 'Home' },
   { href: '/over-ons', label: 'Over ons' },
+  { href: '/verhuur', label: 'Verhuur' },
   { href: '/evenementen', label: 'Evenementen' },
   { href: '/contact', label: 'Contact' },
 ]

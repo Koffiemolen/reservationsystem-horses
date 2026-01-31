@@ -77,10 +77,10 @@ export default function ContactPage() {
                   <div>
                     <p className="font-medium">E-mail</p>
                     <a
-                      href="mailto:info@stichtingderaam.nl"
+                      href="mailto:stichtingderaam@live.nl"
                       className="text-muted-foreground hover:text-primary"
                     >
-                      info@stichtingderaam.nl
+                      stichtingderaam@live.nl
                     </a>
                   </div>
                 </div>
@@ -90,10 +90,10 @@ export default function ContactPage() {
                   <div>
                     <p className="font-medium">Telefoon</p>
                     <a
-                      href="tel:+31612345678"
+                      href="tel:+31627395416"
                       className="text-muted-foreground hover:text-primary"
                     >
-                      +31 6 1234 5678
+                      06 – 27 39 54 16
                     </a>
                   </div>
                 </div>
@@ -103,9 +103,9 @@ export default function ContactPage() {
                   <div>
                     <p className="font-medium">Adres</p>
                     <p className="text-muted-foreground">
-                      Voorbeeldweg 123
+                      Provinciale weg 26
                       <br />
-                      1234 AB Plaatsnaam
+                      5737 GH Lieshout
                     </p>
                   </div>
                 </div>
@@ -114,13 +114,102 @@ export default function ContactPage() {
 
             <Card>
               <CardHeader>
-                <CardTitle>Openingstijden</CardTitle>
+                <CardTitle>Contactpersonen</CardTitle>
+                <CardDescription>
+                  Neem contact op met de juiste persoon voor uw vraag
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <p className="font-medium text-sm">Algemeen & Verhuur</p>
+                  <p className="text-sm text-muted-foreground">
+                    Nicole van Schaik
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    06 – 27 39 54 16
+                  </p>
+                  <a
+                    href="mailto:stichtingderaam@live.nl"
+                    className="text-sm text-primary hover:underline"
+                  >
+                    stichtingderaam@live.nl
+                  </a>
+                </div>
+                <div className="border-t pt-3">
+                  <p className="font-medium text-sm">Losse Rijhal Verhuur</p>
+                  <p className="text-sm text-muted-foreground">
+                    Annemarie van den Hurk
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    0499-423689 / 06-13208923
+                  </p>
+                </div>
+                <div className="border-t pt-3">
+                  <p className="font-medium text-sm">Wedstrijden</p>
+                  <p className="text-sm text-muted-foreground">
+                    Nicole van Schaik
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    06 – 27 39 54 16
+                  </p>
+                  <a
+                    href="mailto:wedstrijdderaam@live.nl"
+                    className="text-sm text-primary hover:underline"
+                  >
+                    wedstrijdderaam@live.nl
+                  </a>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Klachten</CardTitle>
+                <CardDescription>
+                  Procedure voor het indienen van een klacht
+                </CardDescription>
               </CardHeader>
               <CardContent>
-                <p className="text-muted-foreground">
-                  De rijhal is 24/7 beschikbaar voor leden met een reservering.
-                  Het kantoor is bereikbaar van maandag t/m vrijdag van 9:00 tot 17:00.
-                </p>
+                <ol className="space-y-3 text-sm text-muted-foreground">
+                  <li className="flex gap-3">
+                    <span className="font-bold text-primary flex-shrink-0">1.</span>
+                    <span>
+                      Dien uw klacht mondeling in bij de veiligheidscoördinator,
+                      de heer Peter van de Sande (06 – 36 15 36 40).
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="font-bold text-primary flex-shrink-0">2.</span>
+                    <span>
+                      Indien de afhandeling niet naar tevredenheid is, dien dan
+                      binnen twee weken een geschreven klacht in bij Stichting
+                      Manege de Raam. De klacht moet duidelijk beschreven en niet
+                      anoniem zijn.
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="font-bold text-primary flex-shrink-0">3.</span>
+                    <span>
+                      De Stichting geeft binnen twee weken een geschreven
+                      antwoord op uw klacht.
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="font-bold text-primary flex-shrink-0">4.</span>
+                    <span>
+                      Bij onvoldoende oplossing kan u een klacht over veiligheid
+                      of certificering in schrijven bij het Keurmerkinstituut,
+                      Postbus 45, 2700 AA Zoetermeer.
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="font-bold text-primary flex-shrink-0">5.</span>
+                    <span>
+                      Het Keurmerkinstituut antwoordt binnen twee weken over de
+                      afhandeling van uw klacht.
+                    </span>
+                  </li>
+                </ol>
               </CardContent>
             </Card>
           </div>

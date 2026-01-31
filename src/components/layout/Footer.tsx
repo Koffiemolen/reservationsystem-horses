@@ -8,9 +8,31 @@ export function Footer() {
           <div>
             <h3 className="text-lg font-semibold mb-4">Manege de Raam</h3>
             <p className="text-sm text-muted-foreground">
-              Welkom bij Stichting Manege de Raam. Wij bieden een mooie accommodatie
-              voor paardenliefhebbers in de regio.
+              Stichting Manege de Raam beheert Manege D'n Perdenbak in Lieshout.
+              Een plek voor training, wedstrijden en evenementen sinds 1983.
             </p>
+            <p className="text-sm text-muted-foreground mt-3">
+              Provinciale weg 26<br />
+              5737 GH Lieshout
+            </p>
+            <div className="flex gap-4 mt-4">
+              <a
+                href="https://www.facebook.com/stichtingmanegederaam"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-primary text-sm"
+              >
+                Facebook
+              </a>
+              <a
+                href="https://www.instagram.com/stichtingmanegederaam"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-primary text-sm"
+              >
+                Instagram
+              </a>
+            </div>
           </div>
           <div>
             <h3 className="text-lg font-semibold mb-4">Snelle links</h3>
@@ -23,6 +45,11 @@ export function Footer() {
               <li>
                 <Link href="/over-ons" className="text-muted-foreground hover:text-primary">
                   Over ons
+                </Link>
+              </li>
+              <li>
+                <Link href="/verhuur" className="text-muted-foreground hover:text-primary">
+                  Verhuur
                 </Link>
               </li>
               <li>
