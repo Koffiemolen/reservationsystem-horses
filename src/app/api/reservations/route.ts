@@ -2,8 +2,13 @@ import { NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
 import { reservationSchema } from '@/lib/validators'
 import { createReservation, getUserReservations } from '@/services/reservation.service'
+import { validateSecurityMiddleware } from '@/middleware/index'
 
 export async function GET(request: Request) {
+  // Rate limiting only (no CSRF for GET)
+  const securityError = await validateSecurityMiddleware(request, { skipCsrf: true })
+  if (securityError) return securityError
+
   try {
     const session = await auth()
     if (!session?.user) {
@@ -26,6 +31,10 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+  // Security validation (CSRF + rate limiting)
+  const securityError = await validateSecurityMiddleware(request)
+  if (securityError) return securityError
+
   try {
     const session = await auth()
     if (!session?.user) {

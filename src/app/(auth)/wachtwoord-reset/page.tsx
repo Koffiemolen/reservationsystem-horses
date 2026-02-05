@@ -12,6 +12,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Alert, AlertDescription } from '@/components/ui/alert'
+import { fetchWithCsrf } from '@/lib/utils'
 
 const resetFormSchema = z
   .object({
@@ -65,7 +66,7 @@ function ResetPasswordForm() {
     setError(null)
 
     try {
-      const response = await fetch('/api/auth/reset-password', {
+      const response = await fetchWithCsrf('/api/auth/reset-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -73,6 +74,17 @@ function ResetPasswordForm() {
           password: data.password,
         }),
       })
+
+      // Handle CSRF and rate limit errors
+      if (response.status === 403) {
+        setError('Beveiligingstoken verlopen. Herlaad de pagina.')
+        return
+      }
+      if (response.status === 429) {
+        const retryAfter = response.headers.get('Retry-After')
+        setError(retryAfter ? `Te veel pogingen. Probeer over ${retryAfter} seconden opnieuw.` : 'Te veel pogingen.')
+        return
+      }
 
       if (!response.ok) {
         const result = await response.json()

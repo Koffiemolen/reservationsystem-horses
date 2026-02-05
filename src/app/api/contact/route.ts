@@ -2,8 +2,13 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/db'
 import { contactSchema } from '@/lib/validators'
 import { ZodError } from 'zod'
+import { validateSecurityMiddleware } from '@/middleware/index'
 
 export async function POST(request: NextRequest) {
+  // Security validation (CSRF + rate limiting)
+  const securityError = await validateSecurityMiddleware(request)
+  if (securityError) return securityError
+
   try {
     const body = await request.json()
 

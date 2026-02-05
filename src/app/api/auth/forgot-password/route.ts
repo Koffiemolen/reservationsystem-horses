@@ -3,8 +3,13 @@ import { randomBytes } from 'crypto'
 import { prisma } from '@/lib/db'
 import { passwordResetRequestSchema } from '@/lib/validators'
 import { sendPasswordReset } from '@/services/email.service'
+import { validateSecurityMiddleware } from '@/middleware/index'
 
 export async function POST(request: Request) {
+  // Security validation (CSRF + rate limiting)
+  const securityError = await validateSecurityMiddleware(request)
+  if (securityError) return securityError
+
   try {
     const body = await request.json()
     const validatedData = passwordResetRequestSchema.safeParse(body)

@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs'
 import { prisma } from '@/lib/db'
 import { passwordSchema } from '@/lib/validators'
 import { z } from 'zod'
+import { validateSecurityMiddleware } from '@/middleware/index'
 
 const resetSchema = z.object({
   token: z.string().min(1),
@@ -10,6 +11,10 @@ const resetSchema = z.object({
 })
 
 export async function POST(request: Request) {
+  // Security validation (CSRF + rate limiting)
+  const securityError = await validateSecurityMiddleware(request)
+  if (securityError) return securityError
+
   try {
     const body = await request.json()
     const validatedData = resetSchema.safeParse(body)

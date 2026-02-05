@@ -3,8 +3,13 @@ import bcrypt from 'bcryptjs'
 import { prisma } from '@/lib/db'
 import { registerSchema } from '@/lib/validators'
 import { sendWelcomeEmail } from '@/services/email.service'
+import { validateSecurityMiddleware } from '@/middleware/index'
 
 export async function POST(request: Request) {
+  // Security validation (CSRF + rate limiting)
+  const securityError = await validateSecurityMiddleware(request)
+  if (securityError) return securityError
+
   try {
     const body = await request.json()
     const validatedData = registerSchema.safeParse(body)

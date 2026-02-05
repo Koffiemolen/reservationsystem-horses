@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Alert, AlertDescription } from '@/components/ui/alert'
+import { fetchWithCsrf } from '@/lib/utils'
 
 export default function RegisterPage() {
   const router = useRouter()
@@ -33,11 +34,22 @@ export default function RegisterPage() {
     setError(null)
 
     try {
-      const response = await fetch('/api/auth/register', {
+      const response = await fetchWithCsrf('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       })
+
+      // Handle CSRF and rate limit errors
+      if (response.status === 403) {
+        setError('Beveiligingstoken verlopen. Herlaad de pagina.')
+        return
+      }
+      if (response.status === 429) {
+        const retryAfter = response.headers.get('Retry-After')
+        setError(retryAfter ? `Te veel pogingen. Probeer over ${retryAfter} seconden opnieuw.` : 'Te veel pogingen.')
+        return
+      }
 
       if (!response.ok) {
         const result = await response.json()

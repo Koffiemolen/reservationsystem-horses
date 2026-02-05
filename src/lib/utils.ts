@@ -60,3 +60,46 @@ export const VISIBILITY_LABELS: Record<string, string> = {
   MEMBERS: 'Alleen leden',
   ADMIN: 'Alleen beheerders',
 }
+
+/**
+ * Get CSRF token from cookie
+ * Reads the csrf-token cookie set by the server
+ * @returns CSRF token string or empty string if not found
+ */
+export function getCsrfToken(): string {
+  if (typeof document === 'undefined') return ''
+
+  const match = document.cookie.match(/csrf-token=([^;]+)/)
+  return match ? match[1] : ''
+}
+
+/**
+ * Fetch wrapper that automatically includes CSRF token for mutations
+ * Use this instead of fetch() for POST/PUT/PATCH/DELETE requests
+ *
+ * @param url - The URL to fetch
+ * @param options - Fetch options
+ * @returns Promise<Response>
+ *
+ * @example
+ * ```typescript
+ * const response = await fetchWithCsrf('/api/reservations', {
+ *   method: 'POST',
+ *   headers: { 'Content-Type': 'application/json' },
+ *   body: JSON.stringify(data)
+ * })
+ * ```
+ */
+export async function fetchWithCsrf(url: string, options: RequestInit = {}): Promise<Response> {
+  const headers = new Headers(options.headers)
+
+  // Add CSRF token for mutation requests
+  if (['POST', 'PUT', 'PATCH', 'DELETE'].includes(options.method || '')) {
+    const token = getCsrfToken()
+    if (token) {
+      headers.set('X-CSRF-Token', token)
+    }
+  }
+
+  return fetch(url, { ...options, headers })
+}

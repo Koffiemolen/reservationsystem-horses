@@ -30,7 +30,7 @@ import {
 } from '@/components/ui/dialog'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { reservationSchema, type ReservationInput } from '@/lib/validators'
-import { PURPOSE_LABELS, formatTime } from '@/lib/utils'
+import { PURPOSE_LABELS, formatTime, fetchWithCsrf } from '@/lib/utils'
 import { OverlapWarning } from './OverlapWarning'
 import type { Reservation } from '@/types'
 
@@ -153,11 +153,29 @@ export function ReservationForm({
         : '/api/reservations'
       const method = isEditing ? 'PATCH' : 'POST'
 
-      const response = await fetch(url, {
+      const response = await fetchWithCsrf(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       })
+
+      // Handle CSRF token errors
+      if (response.status === 403) {
+        toast.error('Beveiligingstoken verlopen. De pagina wordt herladen...')
+        setTimeout(() => window.location.reload(), 2000)
+        return
+      }
+
+      // Handle rate limiting
+      if (response.status === 429) {
+        const retryAfter = response.headers.get('Retry-After')
+        toast.error(
+          retryAfter
+            ? `Te veel verzoeken. Probeer over ${retryAfter} seconden opnieuw.`
+            : 'Te veel verzoeken. Probeer het later opnieuw.'
+        )
+        return
+      }
 
       const result = await response.json()
 

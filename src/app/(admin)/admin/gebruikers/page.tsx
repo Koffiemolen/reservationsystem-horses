@@ -41,7 +41,7 @@ import {
 } from '@/components/ui/select'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { ROLE_LABELS } from '@/lib/utils'
+import { ROLE_LABELS, fetchWithCsrf } from '@/lib/utils'
 
 interface User {
   id: string
@@ -81,11 +81,29 @@ export default function UsersPage() {
 
     setIsLoading(true)
     try {
-      const response = await fetch(`/api/users/${selectedUser.id}`, {
+      const response = await fetchWithCsrf(`/api/users/${selectedUser.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ role: newRole }),
       })
+
+      // Handle CSRF token errors
+      if (response.status === 403) {
+        toast.error('Beveiligingstoken verlopen. De pagina wordt herladen...')
+        setTimeout(() => window.location.reload(), 2000)
+        return
+      }
+
+      // Handle rate limiting
+      if (response.status === 429) {
+        const retryAfter = response.headers.get('Retry-After')
+        toast.error(
+          retryAfter
+            ? `Te veel verzoeken. Probeer over ${retryAfter} seconden opnieuw.`
+            : 'Te veel verzoeken. Probeer het later opnieuw.'
+        )
+        return
+      }
 
       if (!response.ok) {
         const result = await response.json()
@@ -107,7 +125,7 @@ export default function UsersPage() {
 
     setIsLoading(true)
     try {
-      const response = await fetch(`/api/users/${selectedUser.id}`, {
+      const response = await fetchWithCsrf(`/api/users/${selectedUser.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -115,6 +133,24 @@ export default function UsersPage() {
           reason: enable ? undefined : disableReason,
         }),
       })
+
+      // Handle CSRF token errors
+      if (response.status === 403) {
+        toast.error('Beveiligingstoken verlopen. De pagina wordt herladen...')
+        setTimeout(() => window.location.reload(), 2000)
+        return
+      }
+
+      // Handle rate limiting
+      if (response.status === 429) {
+        const retryAfter = response.headers.get('Retry-After')
+        toast.error(
+          retryAfter
+            ? `Te veel verzoeken. Probeer over ${retryAfter} seconden opnieuw.`
+            : 'Te veel verzoeken. Probeer het later opnieuw.'
+        )
+        return
+      }
 
       if (!response.ok) {
         const result = await response.json()

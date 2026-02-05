@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import { auth } from '@/lib/auth'
+import { generateCsrfToken, createCsrfCookies } from '@/lib/csrf'
 
 // Paths that require authentication
 const protectedPaths = ['/agenda', '/profiel', '/reserveringen']
@@ -25,6 +26,13 @@ export default auth(async function middleware(request: NextRequest) {
     'Permissions-Policy',
     'camera=(), microphone=(), geolocation=()'
   )
+
+  // Inject CSRF token cookie on page loads (GET requests, non-API routes)
+  if (request.method === 'GET' && !pathname.startsWith('/api')) {
+    const csrfToken = generateCsrfToken()
+    const cookies = await createCsrfCookies(csrfToken)
+    cookies.forEach(cookie => response.headers.append('Set-Cookie', cookie))
+  }
 
   // Handle authentication redirects
   const isProtectedPath = protectedPaths.some((path) => pathname.startsWith(path))

@@ -12,6 +12,7 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { contactSchema, type ContactInput } from '@/lib/validators'
+import { fetchWithCsrf } from '@/lib/utils'
 
 export default function ContactPage() {
   const [isLoading, setIsLoading] = useState(false)
@@ -30,11 +31,26 @@ export default function ContactPage() {
     setIsLoading(true)
 
     try {
-      const response = await fetch('/api/contact', {
+      const response = await fetchWithCsrf('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       })
+
+      // Handle CSRF and rate limit errors
+      if (response.status === 403) {
+        toast.error('Beveiligingstoken verlopen. Herlaad de pagina en probeer opnieuw.')
+        return
+      }
+      if (response.status === 429) {
+        const retryAfter = response.headers.get('Retry-After')
+        toast.error(
+          retryAfter
+            ? `Te veel verzoeken. Probeer over ${retryAfter} seconden opnieuw.`
+            : 'Te veel verzoeken. Probeer het later opnieuw.'
+        )
+        return
+      }
 
       if (!response.ok) {
         const result = await response.json()

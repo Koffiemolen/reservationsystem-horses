@@ -3,11 +3,16 @@ import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import { reservationSchema } from '@/lib/validators'
 import { updateReservation, cancelReservation } from '@/services/reservation.service'
+import { validateSecurityMiddleware } from '@/middleware/index'
 
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  // Rate limiting only (no CSRF for GET)
+  const securityError = await validateSecurityMiddleware(request, { skipCsrf: true })
+  if (securityError) return securityError
+
   try {
     const session = await auth()
     if (!session?.user) {
@@ -59,6 +64,10 @@ export async function PATCH(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  // Security validation (CSRF + rate limiting)
+  const securityError = await validateSecurityMiddleware(request)
+  if (securityError) return securityError
+
   try {
     const session = await auth()
     if (!session?.user) {
@@ -134,6 +143,10 @@ export async function DELETE(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  // Security validation (CSRF + rate limiting)
+  const securityError = await validateSecurityMiddleware(request)
+  if (securityError) return securityError
+
   try {
     const session = await auth()
     if (!session?.user) {

@@ -141,7 +141,8 @@ src/
 │   ├── admin/               # Admin components
 │   └── layout/              # Header, PublicHeader, Footer
 ├── hooks/                   # Custom React hooks (useCalendar)
-├── lib/                     # Auth config, DB client, Zod validators, utils, constants
+├── lib/                     # Auth config, DB client, Zod validators, utils, constants, CSRF, rate limiting
+├── middleware/              # Security middleware (CSRF validation, rate limiting)
 ├── services/                # Business logic — all domain logic lives here
 │   ├── reservation.service.ts   # Core booking logic & overlap checks
 │   ├── block.service.ts         # Admin blocks & IMPACTED reservation handling
@@ -159,6 +160,64 @@ src/
 **Security Headers**: Middleware adds security headers (X-Frame-Options, X-Content-Type-Options, CSP, etc.)
 
 **Honeypot Protection**: Contact form includes honeypot field for spam prevention
+
+### Security Features
+
+**CSRF Protection**: Double-submit cookie pattern with HMAC-SHA256 signatures protects all state-changing operations:
+- Cookies injected on GET requests via `src/middleware.ts`
+- Two cookies set: `csrf-token` (readable) and `__Host-csrf-token` (HttpOnly, signed)
+- Client-side: Use `fetchWithCsrf()` from `@/lib/utils` for all POST/PATCH/DELETE requests
+- Server-side: All API routes call `validateSecurityMiddleware()` before business logic
+- Returns HTTP 403 for missing/invalid tokens
+
+**Rate Limiting**: In-memory sliding window algorithm prevents brute force attacks:
+- AUTH_PUBLIC: 5 requests / 15 min (per IP) - registration, password reset
+- CONTACT: 3 requests / hour (per IP) - contact form submissions
+- USER_MUTATION: 30 requests / min (per user) - reservations, profile updates
+- ADMIN_MUTATION: 60 requests / min (per user) - admin operations
+- PUBLIC_READ: 100 requests / min (per IP) - calendar, events
+- Returns HTTP 429 with `Retry-After` header when exceeded
+- Development mode: 100x higher limits for testing
+
+**Implementation Pattern**:
+```typescript
+// API Route (server-side)
+import { validateSecurityMiddleware } from '@/middleware/index'
+
+export async function POST(request: Request) {
+  // STEP 1: Security validation (CSRF + rate limiting)
+  const securityError = await validateSecurityMiddleware(request)
+  if (securityError) return securityError
+
+  // STEP 2: Business logic
+  const session = await auth()
+  const body = await request.json()
+  // ... existing code ...
+}
+
+// Client Component (client-side)
+import { fetchWithCsrf } from '@/lib/utils'
+
+const response = await fetchWithCsrf('/api/endpoint', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify(data)
+})
+
+// Handle security errors
+if (response.status === 403) {
+  // CSRF token expired - reload page
+}
+if (response.status === 429) {
+  // Rate limit exceeded - show retry time
+}
+```
+
+**Configuration**: Set environment variables to disable features for debugging:
+```bash
+DISABLE_CSRF=true           # Disable CSRF validation
+DISABLE_RATE_LIMIT=true     # Disable rate limiting
+```
 
 **Status Values**:
 - User status: `ACTIVE`, `DISABLED`

@@ -28,7 +28,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { ReservationForm } from '@/components/reservations/ReservationForm'
-import { PURPOSE_LABELS, STATUS_LABELS, formatDate, formatTimeRange } from '@/lib/utils'
+import { PURPOSE_LABELS, STATUS_LABELS, formatDate, formatTimeRange, fetchWithCsrf } from '@/lib/utils'
 import type { Reservation } from '@/types'
 
 const DEFAULT_RESOURCE_ID = 'rijhal-binnen'
@@ -61,9 +61,25 @@ export default function ReservationsPage() {
     if (!deletingId) return
 
     try {
-      const response = await fetch(`/api/reservations/${deletingId}`, {
+      const response = await fetchWithCsrf(`/api/reservations/${deletingId}`, {
         method: 'DELETE',
       })
+
+      // Handle CSRF and rate limit errors
+      if (response.status === 403) {
+        toast.error('Beveiligingstoken verlopen. De pagina wordt herladen...')
+        setTimeout(() => window.location.reload(), 2000)
+        return
+      }
+      if (response.status === 429) {
+        const retryAfter = response.headers.get('Retry-After')
+        toast.error(
+          retryAfter
+            ? `Te veel verzoeken. Probeer over ${retryAfter} seconden opnieuw.`
+            : 'Te veel verzoeken. Probeer het later opnieuw.'
+        )
+        return
+      }
 
       if (!response.ok) {
         const result = await response.json()
