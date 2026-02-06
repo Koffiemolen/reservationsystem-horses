@@ -20,7 +20,7 @@ interface ValidationOptions {
  *
  * @example
  * ```typescript
- * import { validateSecurityMiddleware } from '@/middleware'
+ * import { validateSecurityMiddleware } from '@/security'
  *
  * export async function POST(request: Request) {
  *   const securityError = await validateSecurityMiddleware(request)

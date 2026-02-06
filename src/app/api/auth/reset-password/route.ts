@@ -3,7 +3,7 @@ import bcrypt from 'bcryptjs'
 import { prisma } from '@/lib/db'
 import { passwordSchema } from '@/lib/validators'
 import { z } from 'zod'
-import { validateSecurityMiddleware } from '@/middleware/index'
+import { validateSecurityMiddleware } from '@/security'
 
 const resetSchema = z.object({
   token: z.string().min(1),

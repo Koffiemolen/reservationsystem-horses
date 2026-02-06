@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
 import { reservationSchema } from '@/lib/validators'
 import { createReservation, getUserReservations } from '@/services/reservation.service'
-import { validateSecurityMiddleware } from '@/middleware/index'
+import { validateSecurityMiddleware } from '@/security'
 
 export async function GET(request: Request) {
   // Rate limiting only (no CSRF for GET)

@@ -3,7 +3,7 @@ import bcrypt from 'bcryptjs'
 import { prisma } from '@/lib/db'
 import { registerSchema } from '@/lib/validators'
 import { sendWelcomeEmail } from '@/services/email.service'
-import { validateSecurityMiddleware } from '@/middleware/index'
+import { validateSecurityMiddleware } from '@/security'
 
 export async function POST(request: Request) {
   // Security validation (CSRF + rate limiting)

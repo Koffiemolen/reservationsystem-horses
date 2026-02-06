@@ -3,7 +3,7 @@ import { randomBytes } from 'crypto'
 import { prisma } from '@/lib/db'
 import { passwordResetRequestSchema } from '@/lib/validators'
 import { sendPasswordReset } from '@/services/email.service'
-import { validateSecurityMiddleware } from '@/middleware/index'
+import { validateSecurityMiddleware } from '@/security'
 
 export async function POST(request: Request) {
   // Security validation (CSRF + rate limiting)

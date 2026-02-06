@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/db'
 import { contactSchema } from '@/lib/validators'
 import { ZodError } from 'zod'
-import { validateSecurityMiddleware } from '@/middleware/index'
+import { validateSecurityMiddleware } from '@/security'
 
 export async function POST(request: NextRequest) {
   // Security validation (CSRF + rate limiting)

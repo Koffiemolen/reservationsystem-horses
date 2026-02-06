@@ -3,7 +3,7 @@ import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import { blockSchema } from '@/lib/validators'
 import { updateBlock, deleteBlock } from '@/services/block.service'
-import { validateSecurityMiddleware } from '@/middleware/index'
+import { validateSecurityMiddleware } from '@/security'
 
 export async function GET(
   request: Request,

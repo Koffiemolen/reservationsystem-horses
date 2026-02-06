@@ -7,7 +7,7 @@ import {
   disableUser,
   enableUser,
 } from '@/services/user.service'
-import { validateSecurityMiddleware } from '@/middleware/index'
+import { validateSecurityMiddleware } from '@/security'
 
 const updateSchema = z.object({
   role: z.enum(['USER', 'ORGANIZER', 'ADMIN']).optional(),

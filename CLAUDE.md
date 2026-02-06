@@ -146,7 +146,7 @@ src/
 │   └── layout/              # Header, PublicHeader, Footer
 ├── hooks/                   # Custom React hooks (useCalendar)
 ├── lib/                     # Auth config, DB client, Zod validators, utils, constants, CSRF, rate limiting
-├── middleware/              # Security middleware (CSRF validation, rate limiting)
+├── security/                # Security middleware (CSRF validation, rate limiting)
 ├── services/                # Business logic — all domain logic lives here
 │   ├── reservation.service.ts   # Core booking logic & overlap checks
 │   ├── block.service.ts         # Admin blocks & IMPACTED reservation handling
@@ -188,7 +188,7 @@ src/
 **Implementation Pattern**:
 ```typescript
 // API Route (server-side)
-import { validateSecurityMiddleware } from '@/middleware/index'
+import { validateSecurityMiddleware } from '@/security'
 
 export async function POST(request: Request) {
   // STEP 1: Security validation (CSRF + rate limiting)
