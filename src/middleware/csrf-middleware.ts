@@ -25,7 +25,9 @@ export function requiresCsrfValidation(request: Request): boolean {
 
 /**
  * Validate CSRF tokens from request
- * Compares X-CSRF-Token header with __Host-csrf-token cookie
+ * Compares X-CSRF-Token header with signature cookie:
+ * - Production: __Host-csrf-token (requires Secure flag)
+ * - Development: csrf-token-signature (HTTP compatible)
  *
  * @param request - The incoming request
  * @returns Promise<ValidationResult> - Validation result with error message if invalid
@@ -57,8 +59,14 @@ export async function validateCsrfRequest(request: Request): Promise<{
     }
   }
 
-  // Parse __Host-csrf-token cookie (contains HMAC signature)
-  const cookieMatch = cookieHeader.match(/__Host-csrf-token=([^;]+)/)
+  // Parse CSRF signature cookie (contains HMAC signature)
+  // In production: __Host-csrf-token
+  // In development: csrf-token-signature (cannot use __Host- without Secure flag)
+  const isDevelopment = process.env.NODE_ENV === 'development'
+  const cookieName = isDevelopment ? 'csrf-token-signature' : '__Host-csrf-token'
+  const cookiePattern = new RegExp(`${cookieName}=([^;]+)`)
+  const cookieMatch = cookieHeader.match(cookiePattern)
+
   if (!cookieMatch) {
     return {
       valid: false,

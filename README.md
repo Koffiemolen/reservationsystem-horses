@@ -60,9 +60,9 @@ Een modern reserveringssysteem voor Stichting Manege de Raam, gebouwd met Next.j
    AUTH_SECRET="your-secret-key-here"
    NEXTAUTH_URL="http://localhost:3000"
 
-   # Optioneel: Email (Resend)
-   RESEND_API_KEY="your-resend-api-key"
-   EMAIL_FROM="Stichting Manege de Raam <noreply@stichtingderaam.nl>"
+   # Optioneel: Email (SendGrid)
+   SENDGRID_API_KEY="SG.xxxxxxxxxxxx"
+   EMAIL_FROM="noreply@stichtingderaam.nl"
    ```
 
 3. **Initialiseer de database**
@@ -168,11 +168,13 @@ npx prisma db seed   # Seed database met testdata
 
 In development worden emails gelogd naar de console. Voor productie:
 
-1. Maak een account aan bij [Resend](https://resend.com)
+1. Maak een account aan bij [SendGrid](https://sendgrid.com)
 2. Voeg je API key toe aan `.env`:
    ```env
-   RESEND_API_KEY="re_xxxxxxxxxxxx"
+   SENDGRID_API_KEY="SG.xxxxxxxxxxxx"
+   EMAIL_FROM="noreply@stichtingderaam.nl"
    ```
+3. Verifieer je sender email address in SendGrid Dashboard → Settings → Sender Authentication
 
 Email templates:
 - Welkom email bij registratie
@@ -184,11 +186,15 @@ Email templates:
 ## Beveiliging
 
 - Sterke wachtwoordeisen (12+ tekens, complexiteit)
-- CSRF bescherming via Auth.js
-- Security headers (X-Frame-Options, X-Content-Type-Options, etc.)
+- CSRF bescherming met HMAC-SHA256 signatures (double-submit cookie pattern)
+- Rate limiting op alle endpoints (sliding window algoritme)
+- Security headers (X-Frame-Options, X-Content-Type-Options, CSP, etc.)
 - Honeypot spam bescherming op contactformulier
-- Rate limiting op gevoelige endpoints (aanbevolen voor productie)
 - Audit logging van alle belangrijke acties
+
+**CSRF Cookie Namen:**
+- Development: `csrf-token-signature` (HTTP-compatible)
+- Production: `__Host-csrf-token` (requires HTTPS)
 
 ## Licentie
 

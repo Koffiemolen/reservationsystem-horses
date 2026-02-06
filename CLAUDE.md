@@ -114,15 +114,19 @@ Store all times as ISO 8601 strings in database. Display in `Europe/Amsterdam` t
 
 ### Email System
 
-Emails sent via Resend service (`src/services/email.service.ts`):
+Emails sent via SendGrid service (`src/services/email.service.ts`):
 - Reservation confirmation
 - Reservation cancellation
 - Password reset
 - Welcome (on registration)
 - Block notification (when a new block impacts existing reservations — sent per affected user, grouping their affected reservations)
-- Account disabled notification
 
-In development, emails are logged to console if `RESEND_API_KEY` is not set.
+**Configuration**:
+- Set `SENDGRID_API_KEY` in `.env` for production email sending
+- Set `EMAIL_FROM` to specify the sender address (must be verified in SendGrid)
+- In development, emails are logged to console if `SENDGRID_API_KEY` is not set or `NODE_ENV !== 'production'`
+
+**Sender Verification**: Before production use, verify the sender email address in SendGrid Dashboard → Settings → Sender Authentication.
 
 ## Project Structure
 
@@ -165,7 +169,9 @@ src/
 
 **CSRF Protection**: Double-submit cookie pattern with HMAC-SHA256 signatures protects all state-changing operations:
 - Cookies injected on GET requests via `src/middleware.ts`
-- Two cookies set: `csrf-token` (readable) and `__Host-csrf-token` (HttpOnly, signed)
+- Two cookies set: `csrf-token` (readable) and signature cookie (HttpOnly, signed)
+  - Production: `__Host-csrf-token` (requires HTTPS, more secure)
+  - Development: `csrf-token-signature` (HTTP-compatible)
 - Client-side: Use `fetchWithCsrf()` from `@/lib/utils` for all POST/PATCH/DELETE requests
 - Server-side: All API routes call `validateSecurityMiddleware()` before business logic
 - Returns HTTP 403 for missing/invalid tokens

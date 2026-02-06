@@ -129,8 +129,10 @@ function timingSafeEqual(a: string, b: string): boolean {
 /**
  * Create Set-Cookie headers for CSRF tokens
  * Creates two cookies:
- * 1. __Host-csrf-token: HTTP-only, HMAC signature (server-side validation)
+ * 1. __Host-csrf-token (prod) or csrf-token-signature (dev): HTTP-only, HMAC signature (server-side validation)
  * 2. csrf-token: Readable by JS (client-side access)
+ *
+ * Note: __Host- prefix requires Secure flag, so we use a different name in development
  *
  * @param token - The plaintext CSRF token
  * @returns Promise<string[]> - Array of Set-Cookie header strings
@@ -145,9 +147,12 @@ export async function createCsrfCookies(token: string): Promise<string[]> {
   const secure = isDevelopment ? '' : 'Secure; '
   const path = 'Path=/'
 
+  // Use __Host- prefix only in production (requires Secure flag)
+  const signatureCookieName = isDevelopment ? 'csrf-token-signature' : '__Host-csrf-token'
+
   return [
     // HTTP-only signed cookie (for server validation)
-    `__Host-csrf-token=${signature}; HttpOnly; ${secure}SameSite=${sameSite}; ${path}; Max-Age=${maxAge}`,
+    `${signatureCookieName}=${signature}; HttpOnly; ${secure}SameSite=${sameSite}; ${path}; Max-Age=${maxAge}`,
 
     // Readable cookie (for client access)
     `csrf-token=${token}; ${secure}SameSite=${sameSite}; ${path}; Max-Age=${maxAge}`

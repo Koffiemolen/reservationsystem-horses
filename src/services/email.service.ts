@@ -467,12 +467,12 @@ Stichting Manege de Raam
 
 // Email sending functions
 // In development, these log to console
-// In production, they would use Resend or another email service
+// In production, they use SendGrid
 
 async function sendEmail(to: string, template: EmailTemplate): Promise<boolean> {
   const isDevelopment = process.env.NODE_ENV !== 'production'
 
-  if (isDevelopment || !process.env.RESEND_API_KEY) {
+  if (isDevelopment || !process.env.SENDGRID_API_KEY) {
     // Log to console in development
     console.log('\n' + '='.repeat(60))
     console.log('EMAIL NOTIFICATION (Development Mode)')
@@ -486,27 +486,28 @@ async function sendEmail(to: string, template: EmailTemplate): Promise<boolean> 
     return true
   }
 
-  // Production email sending with Resend
+  // Production email sending with SendGrid
   try {
-    const { Resend } = await import('resend')
-    const resend = new Resend(process.env.RESEND_API_KEY)
+    const sgMail = await import('@sendgrid/mail')
+    sgMail.default.setApiKey(process.env.SENDGRID_API_KEY)
 
-    const result = await resend.emails.send({
-      from: process.env.EMAIL_FROM || 'Stichting Manege de Raam <noreply@stichtingderaam.nl>',
-      to: [to],
+    const msg = {
+      to: to,
+      from: process.env.EMAIL_FROM || 'noreply@stichtingderaam.nl',
       subject: template.subject,
-      html: template.html,
       text: template.text,
-    })
-
-    if (result.error) {
-      console.error('Email send error:', result.error)
-      return false
+      html: template.html,
     }
 
+    await sgMail.default.send(msg)
+    console.log(`Email sent successfully to ${to}`)
     return true
   } catch (error) {
     console.error('Email send error:', error)
+    if (error && typeof error === 'object' && 'response' in error) {
+      const sgError = error as { response?: { body?: unknown } }
+      console.error('SendGrid error details:', sgError.response?.body)
+    }
     return false
   }
 }

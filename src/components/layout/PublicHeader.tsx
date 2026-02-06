@@ -21,11 +21,11 @@ export function PublicHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 w-full bg-[#3a3019] shadow-md">
       <div className="container flex h-16 items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2">
-          <span className="text-xl font-bold text-primary">Manege de Raam</span>
+          <span className="text-xl font-bold text-[#8d974e]">Manege de Raam</span>
         </Link>
 
         {/* Desktop Navigation */}
@@ -35,10 +35,10 @@ export function PublicHeader() {
               key={item.href}
               href={item.href}
               className={cn(
-                'text-sm font-medium transition-colors hover:text-primary',
+                'text-sm font-medium transition-colors hover:text-[#8d974e]',
                 pathname === item.href
-                  ? 'text-primary'
-                  : 'text-muted-foreground'
+                  ? 'text-[#8d974e]'
+                  : 'text-[#caa981]'
               )}
             >
               {item.label}
@@ -49,17 +49,17 @@ export function PublicHeader() {
         {/* Login Button */}
         <div className="flex items-center gap-4">
           <Link href="/login" className="hidden md:inline-flex">
-            <Button>Inloggen</Button>
+            <Button className="bg-[#8d974e] hover:bg-[#7a8544] text-white">Inloggen</Button>
           </Link>
 
           {/* Mobile Menu Button */}
           <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
             <SheetTrigger asChild className="md:hidden">
-              <Button variant="ghost" size="icon">
+              <Button variant="ghost" size="icon" className="text-[#caa981] hover:text-white hover:bg-[#4a4228]">
                 <Menu className="h-5 w-5" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-[300px]">
+            <SheetContent side="right" className="w-[300px] bg-[#3a3019] border-[#4a4228]">
               <nav className="flex flex-col gap-4 mt-8">
                 {navItems.map((item) => (
                   <Link
@@ -67,18 +67,18 @@ export function PublicHeader() {
                     href={item.href}
                     onClick={() => setMobileMenuOpen(false)}
                     className={cn(
-                      'text-lg font-medium transition-colors hover:text-primary p-2 rounded-md',
+                      'text-lg font-medium transition-colors hover:text-[#8d974e] p-2 rounded-md',
                       pathname === item.href
-                        ? 'bg-primary/10 text-primary'
-                        : 'text-muted-foreground'
+                        ? 'bg-[#8d974e]/10 text-[#8d974e]'
+                        : 'text-[#caa981]'
                     )}
                   >
                     {item.label}
                   </Link>
                 ))}
-                <div className="border-t my-2" />
+                <div className="border-t border-[#4a4228] my-2" />
                 <Link href="/login" onClick={() => setMobileMenuOpen(false)}>
-                  <Button className="w-full">Inloggen</Button>
+                  <Button className="w-full bg-[#8d974e] hover:bg-[#7a8544] text-white">Inloggen</Button>
                 </Link>
               </nav>
             </SheetContent>
