@@ -4,7 +4,7 @@ import { ArrowRight, Calendar, Clock, Leaf, MapPin, Mail, Sparkles, Users } from
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 
-export default function HomePage() {
+export default function Design2() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
   const [scrollProgress, setScrollProgress] = useState(0)
 
