@@ -1,0 +1,19 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle with earthy color -->
+  <circle cx="256" cy="256" r="256" fill="#4a5d4a"/>
+
+  <!-- Stylized horse head silhouette -->
+  <path d="M 180 160 Q 180 120, 220 110 Q 240 105, 260 110 Q 270 115, 275 130 Q 280 145, 290 155 Q 300 165, 310 175 L 320 190 Q 325 200, 325 215 L 325 240 Q 322 260, 315 275 L 305 290 Q 295 300, 280 305 L 260 310 Q 240 312, 220 310 L 200 305 Q 185 298, 175 285 L 165 265 Q 160 245, 160 225 L 160 195 Q 165 175, 180 160 Z" fill="#f5f1e8" stroke="#8b9d83" stroke-width="3"/>
+
+  <!-- Eye -->
+  <circle cx="270" cy="180" r="8" fill="#4a5d4a"/>
+
+  <!-- Mane details -->
+  <path d="M 240 120 Q 235 135, 230 150" stroke="#8b9d83" stroke-width="4" stroke-linecap="round" fill="none"/>
+  <path d="M 250 115 Q 245 130, 242 145" stroke="#8b9d83" stroke-width="4" stroke-linecap="round" fill="none"/>
+  <path d="M 260 112 Q 258 127, 256 142" stroke="#8b9d83" stroke-width="4" stroke-linecap="round" fill="none"/>
+
+  <!-- Text -->
+  <text x="256" y="380" font-family="serif" font-size="48" font-weight="300" fill="#f5f1e8" text-anchor="middle">DE RAAM</text>
+  <text x="256" y="420" font-family="serif" font-size="24" font-style="italic" fill="#e8dcc4" text-anchor="middle">Manege</text>
+</svg>
