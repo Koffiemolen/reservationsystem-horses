@@ -1,13 +1,12 @@
 'use client'
 
 import { useQuery } from '@tanstack/react-query'
-import { Calendar, Users, Clock, AlertTriangle } from 'lucide-react'
+import { Calendar, Users, Clock, AlertTriangle, Wrench, TrendingUp, UserPlus, BarChart3 } from 'lucide-react'
 import Link from 'next/link'
 import { format } from 'date-fns'
 import { nl } from 'date-fns/locale'
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { formatTimeRange, PURPOSE_LABELS } from '@/lib/utils'
 
@@ -29,13 +28,55 @@ interface RecentReservation {
   resource: { name: string }
 }
 
-async function fetchDashboardData(): Promise<{
+interface DetailedStats {
+  userActivity: {
+    newUsersThisMonth: number
+    activeUsers: number
+    disabledUsers: number
+  }
+  reservationTrends: Array<{ date: string; count: number }>
+  reservationBreakdown: {
+    confirmed: number
+    cancelled: number
+    impacted: number
+  }
+  purposeBreakdown: {
+    training: number
+    lesson: number
+    other: number
+  }
+  averageReservationsPerDay: number
+  cancellationRate: number
+}
+
+interface DashboardData {
   stats: DashboardStats
   recentReservations: RecentReservation[]
-}> {
-  const response = await fetch('/api/admin/dashboard')
+  detailedStats?: DetailedStats
+}
+
+async function fetchDashboardData(): Promise<DashboardData> {
+  const response = await fetch('/api/admin/dashboard?detailed=true')
   if (!response.ok) throw new Error('Failed to fetch dashboard data')
   return response.json()
+}
+
+function MiniBarChart({ data }: { data: Array<{ date: string; count: number }> }) {
+  if (!data || data.length === 0) return null
+  const maxCount = Math.max(...data.map((d) => d.count), 1)
+
+  return (
+    <div className="flex items-end gap-[2px] h-16">
+      {data.map((d, i) => (
+        <div
+          key={i}
+          className="flex-1 bg-primary/70 rounded-t-sm min-h-[2px] transition-all hover:bg-primary"
+          style={{ height: `${(d.count / maxCount) * 100}%` }}
+          title={`${d.date}: ${d.count}`}
+        />
+      ))}
+    </div>
+  )
 }
 
 export default function AdminDashboardPage() {
@@ -67,6 +108,8 @@ export default function AdminDashboardPage() {
     todayReservations: 0,
     activeBlocks: 0,
   }
+
+  const detailed = data?.detailedStats
 
   return (
     <div className="space-y-6">
@@ -132,8 +175,169 @@ export default function AdminDashboardPage() {
         </Card>
       </div>
 
+      {/* Enhanced Statistics */}
+      {detailed && (
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Nieuwe Gebruikers</CardTitle>
+              <UserPlus className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{detailed.userActivity.newUsersThisMonth}</div>
+              <p className="text-xs text-muted-foreground">
+                Deze maand geregistreerd
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Gem. Reserveringen/Dag</CardTitle>
+              <TrendingUp className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{detailed.averageReservationsPerDay}</div>
+              <p className="text-xs text-muted-foreground">
+                Laatste 30 dagen
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Annuleringspercentage</CardTitle>
+              <BarChart3 className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{detailed.cancellationRate}%</div>
+              <p className="text-xs text-muted-foreground">
+                Van alle reserveringen
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
+      {/* Reservation Trends & Breakdowns */}
+      {detailed && (
+        <div className="grid gap-4 md:grid-cols-2">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-sm font-medium">Reserveringen Trend</CardTitle>
+              <CardDescription>Laatste 30 dagen</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <MiniBarChart data={detailed.reservationTrends} />
+              <div className="flex justify-between mt-2 text-xs text-muted-foreground">
+                <span>30 dagen geleden</span>
+                <span>Vandaag</span>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-sm font-medium">Reserveringen per Doel</CardTitle>
+              <CardDescription>Bevestigde reserveringen</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm">Training</span>
+                  <div className="flex items-center gap-2">
+                    <div className="w-24 bg-muted rounded-full h-2">
+                      <div
+                        className="bg-primary rounded-full h-2"
+                        style={{
+                          width: `${
+                            ((detailed.purposeBreakdown.training) /
+                              Math.max(
+                                detailed.purposeBreakdown.training +
+                                  detailed.purposeBreakdown.lesson +
+                                  detailed.purposeBreakdown.other,
+                                1
+                              )) *
+                            100
+                          }%`,
+                        }}
+                      />
+                    </div>
+                    <span className="text-sm font-medium w-8 text-right">
+                      {detailed.purposeBreakdown.training}
+                    </span>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm">Les</span>
+                  <div className="flex items-center gap-2">
+                    <div className="w-24 bg-muted rounded-full h-2">
+                      <div
+                        className="bg-blue-500 rounded-full h-2"
+                        style={{
+                          width: `${
+                            ((detailed.purposeBreakdown.lesson) /
+                              Math.max(
+                                detailed.purposeBreakdown.training +
+                                  detailed.purposeBreakdown.lesson +
+                                  detailed.purposeBreakdown.other,
+                                1
+                              )) *
+                            100
+                          }%`,
+                        }}
+                      />
+                    </div>
+                    <span className="text-sm font-medium w-8 text-right">
+                      {detailed.purposeBreakdown.lesson}
+                    </span>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm">Anders</span>
+                  <div className="flex items-center gap-2">
+                    <div className="w-24 bg-muted rounded-full h-2">
+                      <div
+                        className="bg-amber-500 rounded-full h-2"
+                        style={{
+                          width: `${
+                            ((detailed.purposeBreakdown.other) /
+                              Math.max(
+                                detailed.purposeBreakdown.training +
+                                  detailed.purposeBreakdown.lesson +
+                                  detailed.purposeBreakdown.other,
+                                1
+                              )) *
+                            100
+                          }%`,
+                        }}
+                      />
+                    </div>
+                    <span className="text-sm font-medium w-8 text-right">
+                      {detailed.purposeBreakdown.other}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex gap-2 mt-4 pt-3 border-t">
+                <Badge variant="outline" className="text-xs">
+                  {detailed.reservationBreakdown.confirmed} bevestigd
+                </Badge>
+                <Badge variant="outline" className="text-xs text-red-600">
+                  {detailed.reservationBreakdown.cancelled} geannuleerd
+                </Badge>
+                <Badge variant="outline" className="text-xs text-amber-600">
+                  {detailed.reservationBreakdown.impacted} beïnvloed
+                </Badge>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
       {/* Quick Actions */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
         <Link href="/admin/gebruikers">
           <Card className="hover:bg-muted/50 transition-colors cursor-pointer">
             <CardContent className="pt-6">
@@ -177,6 +381,18 @@ export default function AdminDashboardPage() {
               <h3 className="font-semibold">Evenementen</h3>
               <p className="text-sm text-muted-foreground">
                 Beheer evenementen en wedstrijden
+              </p>
+            </CardContent>
+          </Card>
+        </Link>
+
+        <Link href="/admin/systeem">
+          <Card className="hover:bg-muted/50 transition-colors cursor-pointer">
+            <CardContent className="pt-6">
+              <Wrench className="h-8 w-8 text-primary mb-2" />
+              <h3 className="font-semibold">Systeeminstellingen</h3>
+              <p className="text-sm text-muted-foreground">
+                Configuratie en verbindingstests
               </p>
             </CardContent>
           </Card>

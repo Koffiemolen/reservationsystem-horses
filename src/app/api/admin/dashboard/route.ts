@@ -2,8 +2,9 @@ import { NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import { startOfDay, endOfDay, addDays } from 'date-fns'
+import { getDetailedStats } from '@/services/statistics.service'
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
     const session = await auth()
     if (!session?.user) {
@@ -13,6 +14,9 @@ export async function GET() {
     if (session.user.role !== 'ADMIN') {
       return NextResponse.json({ error: 'Geen toegang' }, { status: 403 })
     }
+
+    const { searchParams } = new URL(request.url)
+    const detailed = searchParams.get('detailed') === 'true'
 
     const now = new Date()
     const todayStart = startOfDay(now)
@@ -69,7 +73,7 @@ export async function GET() {
       }),
     ])
 
-    return NextResponse.json({
+    const response: Record<string, unknown> = {
       stats: {
         totalUsers,
         activeUsers,
@@ -78,7 +82,13 @@ export async function GET() {
         activeBlocks,
       },
       recentReservations,
-    })
+    }
+
+    if (detailed) {
+      response.detailedStats = await getDetailedStats()
+    }
+
+    return NextResponse.json(response)
   } catch (error) {
     console.error('Dashboard API error:', error)
     return NextResponse.json(

@@ -465,6 +465,95 @@ Stichting Manege de Raam
   return { subject, html, text }
 }
 
+// Test email template
+interface TestEmailData {
+  recipientEmail: string
+  recipientName: string
+  testTime: Date
+}
+
+function testEmailTemplate(data: TestEmailData): EmailTemplate {
+  const subject = 'Test Email - Stichting Manege de Raam Reserveringssysteem'
+  const timeStr = formatDateTime(data.testTime)
+  const isProduction = process.env.NODE_ENV === 'production' && !!process.env.SENDGRID_API_KEY
+  const modeLabel = isProduction ? 'Productie' : 'Ontwikkeling'
+
+  const html = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+    .header { background-color: #2563eb; color: white; padding: 20px; text-align: center; }
+    .content { padding: 20px; background-color: #f9fafb; }
+    .details { background-color: white; padding: 15px; border-radius: 8px; margin: 15px 0; }
+    .detail-row { padding: 8px 0; border-bottom: 1px solid #e5e7eb; }
+    .detail-label { font-weight: bold; }
+    .success { background-color: #dcfce7; padding: 15px; border-radius: 8px; margin: 15px 0; text-align: center; }
+    .footer { padding: 20px; text-align: center; font-size: 12px; color: #6b7280; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Test Email</h1>
+    </div>
+    <div class="content">
+      <p>Beste ${data.recipientName},</p>
+
+      <div class="success">
+        <strong>De e-mailconfiguratie werkt correct!</strong>
+      </div>
+
+      <p>Dit is een test e-mail verzonden vanuit het reserveringssysteem om te verifi&euml;ren dat de e-mailconfiguratie correct is ingesteld.</p>
+
+      <div class="details">
+        <div class="detail-row">
+          <span class="detail-label">Verzonden op:</span> ${timeStr}
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Modus:</span> ${modeLabel}
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Provider:</span> ${process.env.SENDGRID_API_KEY ? 'SendGrid' : 'Console'}
+        </div>
+      </div>
+
+      <p>Als u deze e-mail ontvangt, is het e-mailsysteem correct geconfigureerd.</p>
+    </div>
+    <div class="footer">
+      <p>Stichting Manege de Raam - Systeemtest</p>
+      <p>Dit is een automatisch gegenereerd testbericht.</p>
+    </div>
+  </div>
+</body>
+</html>
+`
+
+  const text = `
+Test Email - Reserveringssysteem
+
+Beste ${data.recipientName},
+
+De e-mailconfiguratie werkt correct!
+
+Dit is een test e-mail verzonden vanuit het reserveringssysteem om te verifieren dat de e-mailconfiguratie correct is ingesteld.
+
+Verzonden op: ${timeStr}
+Modus: ${modeLabel}
+Provider: ${process.env.SENDGRID_API_KEY ? 'SendGrid' : 'Console'}
+
+Als u deze e-mail ontvangt, is het e-mailsysteem correct geconfigureerd.
+
+Met vriendelijke groet,
+Stichting Manege de Raam - Systeemtest
+`
+
+  return { subject, html, text }
+}
+
 // Email sending functions
 // In development, these log to console
 // In production, they use SendGrid
@@ -538,4 +627,9 @@ export async function sendWelcomeEmail(data: WelcomeEmailData): Promise<boolean>
 export async function sendBlockNotification(data: BlockNotificationEmailData): Promise<boolean> {
   const template = blockNotificationTemplate(data)
   return sendEmail(data.userEmail, template)
+}
+
+export async function sendTestEmail(data: TestEmailData): Promise<boolean> {
+  const template = testEmailTemplate(data)
+  return sendEmail(data.recipientEmail, template)
 }

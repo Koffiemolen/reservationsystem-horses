@@ -90,6 +90,11 @@ export const passwordResetSchema = z
     path: ['confirmPassword'],
   })
 
+export const testEmailSchema = z.object({
+  email: z.string().email('Ongeldig e-mailadres'),
+})
+
+export type TestEmailInput = z.infer<typeof testEmailSchema>
 export type RegisterInput = z.infer<typeof registerSchema>
 export type LoginInput = z.infer<typeof loginSchema>
 export type ReservationInput = z.infer<typeof reservationSchema>

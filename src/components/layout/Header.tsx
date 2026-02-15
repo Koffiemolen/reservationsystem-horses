@@ -4,7 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { signOut, useSession } from 'next-auth/react'
-import { Menu, X, Calendar, List, User, LogOut, Settings } from 'lucide-react'
+import { Menu, X, Calendar, List, User, LogOut, Settings, Wrench } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -28,6 +28,7 @@ const adminNavItems = [
   { href: '/admin/gebruikers', label: 'Gebruikers', icon: User },
   { href: '/admin/blokkades', label: 'Blokkades', icon: Calendar },
   { href: '/admin/evenementen', label: 'Evenementen', icon: Calendar },
+  { href: '/admin/systeem', label: 'Systeeminstellingen', icon: Wrench },
 ]
 
 export function Header() {
