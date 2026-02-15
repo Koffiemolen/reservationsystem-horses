@@ -22,11 +22,27 @@ const playfairDisplay = Playfair_Display({
 
 export const metadata: Metadata = {
   title: {
-    default: "Manege de Raam - Reserveringssysteem",
-    template: "%s | Manege de Raam",
+    default: "Manege De Raam - D'n Perdenbak | Lieshout",
+    template: "%s | Manege De Raam",
   },
-  description: "Reserveringssysteem voor Stichting Manege de Raam",
-  keywords: ["manege", "reservering", "paarden", "rijhal", "de raam"],
+  description: "Stichting Manege De Raam beheert Manege D'n Perdenbak in Lieshout. Professionele rijhal 25×50m met Equisport zandboden. Online reserveren, KNHS wedstrijden, en verhuur faciliteiten.",
+  keywords: ["manege", "de raam", "perdenbak", "lieshout", "paarden", "rijhal", "dressuur", "knhs", "reservering", "brabant"],
+  icons: {
+    icon: [
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+    ],
+    apple: [
+      { url: '/logo.svg' },
+    ],
+  },
+  openGraph: {
+    title: "Manege De Raam - D'n Perdenbak",
+    description: "Professionele paardensportfaciliteiten in Lieshout. 25×50m rijhal, KNHS wedstrijden, online reserveren.",
+    url: 'https://stichtingderaam.nl',
+    siteName: 'Manege De Raam',
+    locale: 'nl_NL',
+    type: 'website',
+  },
 };
 
 export default function RootLayout({

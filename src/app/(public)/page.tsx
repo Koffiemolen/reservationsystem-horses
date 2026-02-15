@@ -3,6 +3,7 @@
 import { ArrowRight, Calendar, Clock, Leaf, MapPin, Mail, Sparkles, Users } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import { WatermarkedImage } from '@/components/ui/WatermarkedImage'
 
 export default function HomePage() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
@@ -346,13 +347,16 @@ export default function HomePage() {
               </div>
             </div>
             <div className="order-1 md:order-2">
-              <div
-                className="organic-blob aspect-square bg-gradient-to-br from-[var(--earth-sand)] to-[var(--earth-clay)] flex items-center justify-center"
-              >
-                <div className="text-center p-8">
-                  <div className="organic-title text-7xl text-white mb-2">25×50</div>
-                  <div className="text-white/80 text-sm tracking-wider">METER RIJHAL</div>
-                </div>
+              <div className="organic-blob overflow-hidden aspect-square">
+                <WatermarkedImage
+                  src="/images/facility-indoor-arena.jpg"
+                  alt="Binnenrijhal 25×50 meter met professionele zandboden"
+                  width={800}
+                  height={800}
+                  className="w-full h-full"
+                  watermarkPosition="bottom-right"
+                  watermarkSize="medium"
+                />
               </div>
             </div>
           </div>
@@ -366,10 +370,18 @@ export default function HomePage() {
             <div className="grid md:grid-cols-2 gap-12 items-center">
               <div>
                 <div
-                  className="organic-blob aspect-video bg-gradient-to-br from-[var(--earth-moss)] to-[var(--earth-forest)] flex items-center justify-center"
+                  className="organic-blob overflow-hidden aspect-video"
                   style={{ borderRadius: '48% 52% 68% 32% / 42% 58% 42% 58%' }}
                 >
-                  <div className="text-white/50 text-sm">Wedstrijd impressie</div>
+                  <WatermarkedImage
+                    src="/images/event-competition.jpg"
+                    alt="KNHS dressuurwedstrijd bij Manege D'n Perdenbak"
+                    width={800}
+                    height={450}
+                    className="w-full h-full"
+                    watermarkPosition="bottom-right"
+                    watermarkSize="small"
+                  />
                 </div>
               </div>
               <div>
