@@ -1,6 +1,18 @@
-<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-  <rect width="32" height="32" rx="6" fill="#4a5d4a"/>
-  <path d="M 11 10 Q 11 8, 13 7.5 Q 15 7, 16 7.5 Q 17 8, 17.5 9 Q 18 10, 18.5 10.5 L 19 11.5 Q 19.5 12, 19.5 13 L 19.5 15 Q 19.3 16, 18.8 17 L 18 18 Q 17 18.5, 16 19 L 14 19.2 Q 13 19.2, 12 19 L 11 18.5 Q 10 18, 9.5 17 L 9 15.5 Q 8.5 14, 8.5 13 L 8.5 11.5 Q 9 10.5, 11 10 Z" fill="#f5f1e8"/>
-  <circle cx="16" cy="11" r="1.5" fill="#4a5d4a"/>
-  <text x="16" y="28" font-family="serif" font-size="8" font-weight="bold" fill="#f5f1e8" text-anchor="middle">DR</text>
+<svg width="32" height="32" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle -->
+  <circle cx="256" cy="256" r="256" fill="#4a5d4a"/>
+
+  <!-- Horse head silhouette (same as logo) -->
+  <path d="M 180 160 Q 180 120, 220 110 Q 240 105, 260 110 Q 270 115, 275 130 Q 280 145, 290 155 Q 300 165, 310 175 L 320 190 Q 325 200, 325 215 L 325 240 Q 322 260, 315 275 L 305 290 Q 295 300, 280 305 L 260 310 Q 240 312, 220 310 L 200 305 Q 185 298, 175 285 L 165 265 Q 160 245, 160 225 L 160 195 Q 165 175, 180 160 Z" fill="#f5f1e8" stroke="#8b9d83" stroke-width="5"/>
+
+  <!-- Eye -->
+  <circle cx="270" cy="180" r="12" fill="#4a5d4a"/>
+
+  <!-- Mane details -->
+  <path d="M 240 120 Q 235 135, 230 150" stroke="#8b9d83" stroke-width="6" stroke-linecap="round" fill="none"/>
+  <path d="M 250 115 Q 245 130, 242 145" stroke="#8b9d83" stroke-width="6" stroke-linecap="round" fill="none"/>
+  <path d="M 260 112 Q 258 127, 256 142" stroke="#8b9d83" stroke-width="6" stroke-linecap="round" fill="none"/>
+
+  <!-- Compact text for favicon -->
+  <text x="256" y="400" font-family="serif" font-size="72" font-weight="600" fill="#f5f1e8" text-anchor="middle">DR</text>
 </svg>
