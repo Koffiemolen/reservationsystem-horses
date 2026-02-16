@@ -308,7 +308,10 @@ export default function EvenementenPage() {
           </h2>
           <p className="text-[var(--earth-bark)] mb-8 leading-relaxed">
             Voor wedstrijden: inschrijving via mijnknhs.nl. Voor vragen
-            over evenementen neem contact op via wedstrijdderaam@live.nl
+            over evenementen neem contact op via het{' '}
+            <Link href="/contact" className="text-[var(--earth-moss)] hover:text-[var(--earth-forest)] underline">
+              contactformulier
+            </Link>{' '}
             of registreer een account om reserveringen te maken.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">

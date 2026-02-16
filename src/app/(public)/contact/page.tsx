@@ -6,6 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Mail, Phone, MapPin, Send } from 'lucide-react'
 import { toast } from 'sonner'
 
+import { ObfuscatedContact } from '@/components/ui/ObfuscatedContact'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -204,12 +205,11 @@ export default function ContactPage() {
                     <Mail size={24} className="text-[var(--earth-moss)] mt-1 flex-shrink-0" />
                     <div>
                       <p className="font-semibold text-[var(--earth-forest)] mb-1">E-mail</p>
-                      <a
-                        href="mailto:stichtingderaam@live.nl"
+                      <ObfuscatedContact
+                        parts={['stichtingderaam', '@', 'live.nl']}
+                        type="email"
                         className="text-[var(--earth-moss)] hover:text-[var(--earth-forest)] transition-colors"
-                      >
-                        stichtingderaam@live.nl
-                      </a>
+                      />
                     </div>
                   </div>
 
@@ -217,12 +217,11 @@ export default function ContactPage() {
                     <Phone size={24} className="text-[var(--earth-moss)] mt-1 flex-shrink-0" />
                     <div>
                       <p className="font-semibold text-[var(--earth-forest)] mb-1">Telefoon</p>
-                      <a
-                        href="tel:+31627395416"
+                      <ObfuscatedContact
+                        parts={['06', ' – ', '27 39 54 16']}
+                        type="phone"
                         className="text-[var(--earth-moss)] hover:text-[var(--earth-forest)] transition-colors"
-                      >
-                        06 – 27 39 54 16
-                      </a>
+                      />
                     </div>
                   </div>
 
@@ -247,23 +246,19 @@ export default function ContactPage() {
                   <div>
                     <p className="font-semibold text-[var(--earth-forest)]">Algemeen & Verhuur</p>
                     <p className="text-[var(--earth-bark)]">Nicole van Schaik</p>
-                    <p className="text-[var(--earth-bark)]">06 – 27 39 54 16</p>
-                    <a href="mailto:stichtingderaam@live.nl" className="text-[var(--earth-moss)] hover:text-[var(--earth-forest)]">
-                      stichtingderaam@live.nl
-                    </a>
+                    <ObfuscatedContact parts={['06', ' – ', '27 39 54 16']} type="phone" className="text-[var(--earth-bark)] block" />
+                    <ObfuscatedContact parts={['stichtingderaam', '@', 'live.nl']} type="email" className="text-[var(--earth-moss)] hover:text-[var(--earth-forest)]" />
                   </div>
                   <div className="pt-4 border-t border-[var(--earth-sand)]">
                     <p className="font-semibold text-[var(--earth-forest)]">Losse Rijhal Verhuur</p>
                     <p className="text-[var(--earth-bark)]">Annemarie van den Hurk</p>
-                    <p className="text-[var(--earth-bark)]">0499-423689 / 06-13208923</p>
+                    <ObfuscatedContact parts={['0499', '-', '423689', ' / ', '06', '-', '13208923']} type="phone" className="text-[var(--earth-bark)] block" />
                   </div>
                   <div className="pt-4 border-t border-[var(--earth-sand)]">
                     <p className="font-semibold text-[var(--earth-forest)]">Wedstrijden</p>
                     <p className="text-[var(--earth-bark)]">Nicole van Schaik</p>
-                    <p className="text-[var(--earth-bark)]">06 – 27 39 54 16</p>
-                    <a href="mailto:wedstrijdderaam@live.nl" className="text-[var(--earth-moss)] hover:text-[var(--earth-forest)]">
-                      wedstrijdderaam@live.nl
-                    </a>
+                    <ObfuscatedContact parts={['06', ' – ', '27 39 54 16']} type="phone" className="text-[var(--earth-bark)] block" />
+                    <ObfuscatedContact parts={['wedstrijdderaam', '@', 'live.nl']} type="email" className="text-[var(--earth-moss)] hover:text-[var(--earth-forest)]" />
                   </div>
                 </div>
               </div>
@@ -277,7 +272,7 @@ export default function ContactPage() {
                     <span className="font-bold text-[var(--earth-moss)] flex-shrink-0">1.</span>
                     <span>
                       Dien uw klacht mondeling in bij de veiligheidscoördinator,
-                      de heer Peter van de Sande (06 – 36 15 36 40).
+                      de heer Peter van de Sande (<ObfuscatedContact parts={['06', ' – ', '36 15 36 40']} type="phone" className="text-[var(--earth-bark)]" />).
                     </span>
                   </li>
                   <li className="flex gap-3">

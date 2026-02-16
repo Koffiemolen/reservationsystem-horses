@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { Phone, Mail, MapPin, Users, Target, Heart, Shield } from 'lucide-react'
+import { ObfuscatedContact } from '@/components/ui/ObfuscatedContact'
 
 export default function OverOnsPage() {
   return (
@@ -189,9 +190,7 @@ export default function OverOnsPage() {
                 Verantwoordelijk voor losse verhuur (rijhal en overig) en
                 het beheer van de faciliteiten.
               </p>
-              <p className="text-[var(--earth-bark)] font-medium">
-                06 – 13 20 89 23
-              </p>
+              <ObfuscatedContact parts={['06', ' – ', '13 20 89 23']} type="phone" className="text-[var(--earth-bark)] font-medium" />
             </div>
 
             <div className="organic-card">
@@ -208,9 +207,7 @@ export default function OverOnsPage() {
                 Coördineert wedstrijden en behandelt verzoeken voor
                 passe-partouts.
               </p>
-              <p className="text-[var(--earth-bark)] font-medium">
-                06 – 27 39 54 16
-              </p>
+              <ObfuscatedContact parts={['06', ' – ', '27 39 54 16']} type="phone" className="text-[var(--earth-bark)] font-medium" />
             </div>
           </div>
 
@@ -300,16 +297,14 @@ export default function OverOnsPage() {
             <div className="organic-card text-center">
               <Phone size={32} className="text-[var(--earth-moss)] mx-auto mb-4" />
               <h3 className="organic-title text-xl mb-2 text-[var(--earth-forest)]">Telefoon</h3>
-              <p className="text-[var(--earth-bark)] text-sm">
-                06 – 27 39 54 16
-              </p>
+              <ObfuscatedContact parts={['06', ' – ', '27 39 54 16']} type="phone" className="text-[var(--earth-bark)] text-sm" />
             </div>
             <div className="organic-card text-center">
               <Mail size={32} className="text-[var(--earth-moss)] mx-auto mb-4" />
               <h3 className="organic-title text-xl mb-2 text-[var(--earth-forest)]">E-mail</h3>
-              <a href="mailto:stichtingderaam@live.nl" className="text-[var(--earth-moss)] hover:text-[var(--earth-forest)] transition-colors text-sm">
-                stichtingderaam@live.nl
-              </a>
+              <Link href="/contact" className="text-[var(--earth-moss)] hover:text-[var(--earth-forest)] transition-colors text-sm">
+                Stuur ons een bericht →
+              </Link>
             </div>
           </div>
         </div>

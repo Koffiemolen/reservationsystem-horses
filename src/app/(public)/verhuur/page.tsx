@@ -1,5 +1,7 @@
 'use client'
 
+import { ObfuscatedContact } from '@/components/ui/ObfuscatedContact'
+
 export default function VerhuurPage() {
   return (
     <div className="organic-design">
@@ -154,10 +156,10 @@ export default function VerhuurPage() {
                 Contactpersonen
               </p>
               <p className="text-sm text-[var(--earth-bark)] mb-2">
-                <strong>Losse huur:</strong> Annemarie van den Hurk — 0499-423689 / 06-13208923
+                <strong>Losse huur:</strong> Annemarie van den Hurk — <ObfuscatedContact parts={['0499', '-', '423689', ' / ', '06', '-', '13208923']} type="phone" className="text-[var(--earth-bark)]" />
               </p>
               <p className="text-sm text-[var(--earth-bark)]">
-                <strong>Passes:</strong> Nicole van Schaik — 06-27395416
+                <strong>Passes:</strong> Nicole van Schaik — <ObfuscatedContact parts={['06', '-', '27395416']} type="phone" className="text-[var(--earth-bark)]" />
               </p>
             </div>
           </div>
@@ -251,10 +253,10 @@ export default function VerhuurPage() {
                 Contact voor verhuur
               </p>
               <p className="text-sm text-[var(--earth-bark)] mb-2">
-                Nicole van Schaik — 06-27395416 — stichtingderaam@live.nl
+                Nicole van Schaik — <ObfuscatedContact parts={['06', '-', '27395416']} type="phone" className="text-[var(--earth-bark)]" /> — <ObfuscatedContact parts={['stichtingderaam', '@', 'live.nl']} type="email" className="text-[var(--earth-moss)] hover:text-[var(--earth-forest)]" />
               </p>
               <p className="text-sm text-[var(--earth-bark)]">
-                Annemarie van den Hurk — 0499-423689 / 06-13208923
+                Annemarie van den Hurk — <ObfuscatedContact parts={['0499', '-', '423689', ' / ', '06', '-', '13208923']} type="phone" className="text-[var(--earth-bark)]" />
               </p>
             </div>
           </div>
@@ -311,12 +313,11 @@ export default function VerhuurPage() {
                 mijnknhs.nl
               </a>
               . Neem voor vragen contact op met Nicole van Schaik via{' '}
-              <a
-                href="mailto:wedstrijdderaam@live.nl"
+              <ObfuscatedContact
+                parts={['wedstrijdderaam', '@', 'live.nl']}
+                type="email"
                 className="text-[var(--earth-moss)] hover:text-[var(--earth-forest)] transition-colors underline"
-              >
-                wedstrijdderaam@live.nl
-              </a>
+              />
               .
             </p>
           </div>
