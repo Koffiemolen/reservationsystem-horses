@@ -195,6 +195,18 @@ export default function HomePage() {
 
         <div className="max-w-6xl mx-auto relative z-10 px-6 py-20">
           <div className="text-center fade-in-up">
+            {/* Logo */}
+            <div className="relative inline-block mb-8">
+              <div className="absolute inset-0 rounded-full bg-[var(--earth-moss)]/40 blur-2xl scale-150" />
+              <Image
+                src="/logo.svg"
+                alt="Manege de Raam logo"
+                width={140}
+                height={140}
+                priority
+                className="relative rounded-full ring-4 ring-white/20 shadow-2xl"
+              />
+            </div>
             <div className="inline-flex items-center gap-2 mb-6 px-4 py-2 rounded-full bg-white/15 backdrop-blur-md border border-white/20">
               <Sparkles size={16} className="text-[var(--earth-sand)]" />
               <span className="text-sm font-semibold text-white/90">Sinds 1998</span>
@@ -418,6 +430,13 @@ export default function HomePage() {
       {/* Footer */}
       <footer className="py-12 px-6 border-t border-[var(--earth-sand)]">
         <div className="max-w-6xl mx-auto text-center">
+          <Image
+            src="/logo.svg"
+            alt="Manege de Raam logo"
+            width={56}
+            height={56}
+            className="rounded-full mx-auto mb-4 opacity-60"
+          />
           <div className="organic-title text-3xl mb-4 text-[var(--earth-forest)]">
             Stichting Manege De Raam
           </div>
