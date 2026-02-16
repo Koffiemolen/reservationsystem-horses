@@ -10,7 +10,7 @@ export default function PublicLayout({
   return (
     <div className="min-h-screen flex flex-col">
       <PublicHeader />
-      <main className="flex-1">{children}</main>
+      <main className="flex-1 mx-auto w-full">{children}</main>
       <Footer />
       <Toaster />
     </div>

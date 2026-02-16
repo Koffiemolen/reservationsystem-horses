@@ -102,35 +102,37 @@ export function WeekView({
 
   return (
     <div className="flex flex-col h-full">
-      {/* Header with day names */}
-      <div className="flex border-b sticky top-0 bg-background z-10">
-        <div className="w-16 flex-shrink-0" /> {/* Time column spacer */}
-        {days.map((day) => (
-          <div
-            key={day.toISOString()}
-            className={cn(
-              'flex-1 text-center py-2 border-l cursor-pointer hover:bg-muted/50',
-              isToday(day) && 'bg-primary/10'
-            )}
-            onClick={() => onDateClick?.(day)}
-          >
-            <div className="text-sm text-muted-foreground">
-              {format(day, 'EEE', { locale: nl })}
-            </div>
+      {/* Scrollable container for header + time grid */}
+      <div className="flex-1 overflow-y-auto">
+        {/* Header with day names */}
+        <div className="flex border-b sticky top-0 bg-background z-10">
+          <div className="w-16 flex-shrink-0" /> {/* Time column spacer */}
+          {days.map((day) => (
             <div
+              key={day.toISOString()}
               className={cn(
-                'text-lg font-semibold',
-                isToday(day) && 'text-primary'
+                'flex-1 text-center py-2 border-l cursor-pointer hover:bg-muted/50',
+                isToday(day) && 'bg-primary/10'
               )}
+              onClick={() => onDateClick?.(day)}
             >
-              {format(day, 'd')}
+              <div className="text-sm text-muted-foreground">
+                {format(day, 'EEE', { locale: nl })}
+              </div>
+              <div
+                className={cn(
+                  'text-lg font-semibold',
+                  isToday(day) && 'text-primary'
+                )}
+              >
+                {format(day, 'd')}
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
 
-      {/* Time grid */}
-      <div className="flex flex-1 overflow-y-auto">
+        {/* Time grid */}
+        <div className="flex">
         {/* Time labels */}
         <div className="w-16 flex-shrink-0">
           {HOURS.map((hour) => (
@@ -197,6 +199,7 @@ export function WeekView({
             </div>
           )
         })}
+        </div>
       </div>
     </div>
   )

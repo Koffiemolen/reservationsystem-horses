@@ -1,30 +1,10 @@
 'use client'
 
 import { ArrowRight, Calendar, Clock, Leaf, MapPin, Mail, Sparkles, Users } from 'lucide-react'
-import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { WatermarkedImage } from '@/components/ui/WatermarkedImage'
 
 export default function HomePage() {
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
-  const [scrollProgress, setScrollProgress] = useState(0)
-
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      setMousePosition({ x: e.clientX, y: e.clientY })
-    }
-    const handleScroll = () => {
-      const scrolled = window.scrollY
-      const maxScroll = document.documentElement.scrollHeight - window.innerHeight
-      setScrollProgress((scrolled / maxScroll) * 100)
-    }
-    window.addEventListener('mousemove', handleMouseMove)
-    window.addEventListener('scroll', handleScroll)
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove)
-      window.removeEventListener('scroll', handleScroll)
-    }
-  }, [])
 
   return (
     <div className="organic-design">
@@ -193,27 +173,6 @@ export default function HomePage() {
           }}
         />
       </div>
-
-      {/* Progress bar */}
-      <div className="fixed top-0 left-0 right-0 h-1 bg-white/30 z-50">
-        <div
-          className="h-full bg-gradient-to-r from-[var(--earth-moss)] to-[var(--earth-forest)] transition-all duration-150"
-          style={{ width: `${scrollProgress}%` }}
-        />
-      </div>
-
-      {/* Navigation */}
-      <nav className="sticky top-0 z-40 backdrop-blur-lg bg-[var(--earth-cream)]/80">
-        <div className="max-w-6xl mx-auto px-6 py-6 flex justify-between items-center">
-          <div className="organic-title text-3xl text-[var(--earth-forest)]">De Raam</div>
-          <div className="flex gap-8 text-sm font-semibold">
-            <a href="#welkom" className="hover:text-[var(--earth-moss)] transition-colors">Welkom</a>
-            <a href="#faciliteiten" className="hover:text-[var(--earth-moss)] transition-colors">Faciliteiten</a>
-            <a href="#wedstrijden" className="hover:text-[var(--earth-moss)] transition-colors">Wedstrijden</a>
-            <a href="#contact" className="hover:text-[var(--earth-moss)] transition-colors">Contact</a>
-          </div>
-        </div>
-      </nav>
 
       {/* Hero */}
       <section id="welkom" className="relative min-h-screen flex items-center justify-center py-20 px-6 overflow-hidden">
