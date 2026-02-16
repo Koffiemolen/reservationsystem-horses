@@ -475,8 +475,8 @@ interface TestEmailData {
 function testEmailTemplate(data: TestEmailData): EmailTemplate {
   const subject = 'Test Email - Stichting Manege de Raam Reserveringssysteem'
   const timeStr = formatDateTime(data.testTime)
-  const isProduction = process.env.NODE_ENV === 'production' && !!process.env.SENDGRID_API_KEY
-  const modeLabel = isProduction ? 'Productie' : 'Ontwikkeling'
+  const hasApiKey = !!process.env.EMAIL_API_KEY
+  const modeLabel = hasApiKey ? 'Productie (Bird)' : 'Ontwikkeling (console)'
 
   const html = `
 <!DOCTYPE html>
@@ -517,7 +517,7 @@ function testEmailTemplate(data: TestEmailData): EmailTemplate {
           <span class="detail-label">Modus:</span> ${modeLabel}
         </div>
         <div class="detail-row">
-          <span class="detail-label">Provider:</span> ${process.env.SENDGRID_API_KEY ? 'SendGrid' : 'Console'}
+          <span class="detail-label">Provider:</span> ${process.env.EMAIL_API_KEY ? 'Bird' : 'Console'}
         </div>
       </div>
 
@@ -543,7 +543,7 @@ Dit is een test e-mail verzonden vanuit het reserveringssysteem om te verifieren
 
 Verzonden op: ${timeStr}
 Modus: ${modeLabel}
-Provider: ${process.env.SENDGRID_API_KEY ? 'SendGrid' : 'Console'}
+Provider: ${process.env.EMAIL_API_KEY ? 'Bird' : 'Console'}
 
 Als u deze e-mail ontvangt, is het e-mailsysteem correct geconfigureerd.
 
@@ -554,17 +554,19 @@ Stichting Manege de Raam - Systeemtest
   return { subject, html, text }
 }
 
+// Bird Email API configuration
+const BIRD_API_URL =
+  'https://email.eu-west-1.api.bird.com/api/workspaces/95561e83-4adc-4592-b7ed-6128641d6268/reach/transmissions'
+
 // Email sending functions
 // In development, these log to console
-// In production, they use SendGrid
+// In production, they use Bird Email API
 
 async function sendEmail(to: string, template: EmailTemplate): Promise<boolean> {
-  const isDevelopment = process.env.NODE_ENV !== 'production'
-
-  if (isDevelopment || !process.env.SENDGRID_API_KEY) {
-    // Log to console in development
+  if (!process.env.EMAIL_API_KEY) {
+    // Log to console when no API key is configured
     console.log('\n' + '='.repeat(60))
-    console.log('EMAIL NOTIFICATION (Development Mode)')
+    console.log('EMAIL NOTIFICATION (Console Mode - no EMAIL_API_KEY set)')
     console.log('='.repeat(60))
     console.log(`To: ${to}`)
     console.log(`Subject: ${template.subject}`)
@@ -575,28 +577,50 @@ async function sendEmail(to: string, template: EmailTemplate): Promise<boolean> 
     return true
   }
 
-  // Production email sending with SendGrid
+  // Production email sending with Bird
   try {
-    const sgMail = await import('@sendgrid/mail')
-    sgMail.default.setApiKey(process.env.SENDGRID_API_KEY)
+    const fromEmail = process.env.EMAIL_FROM || 'reserveringenderaam@stijvehark.nl'
 
-    const msg = {
-      to: to,
-      from: process.env.EMAIL_FROM || 'noreply@stichtingderaam.nl',
-      subject: template.subject,
-      text: template.text,
-      html: template.html,
+    const response = await fetch(BIRD_API_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        Authorization: `AccessKey ${process.env.EMAIL_API_KEY}`,
+      },
+      body: JSON.stringify({
+        content: {
+          from: `Manege de Raam <${fromEmail}>`,
+          subject: template.subject,
+          html: template.html,
+          text: template.text,
+        },
+        recipients: [
+          {
+            address: { email: to, name: to },
+            rcpt_type: 'to',
+          },
+        ],
+        options: {
+          transactional: true,
+          open_tracking: true,
+          click_tracking: true,
+          sandbox: false,
+        },
+      }),
+    })
+
+    if (!response.ok) {
+      const errorBody = await response.text()
+      console.error(`Bird API error (${response.status}):`, errorBody)
+      return false
     }
 
-    await sgMail.default.send(msg)
-    console.log(`Email sent successfully to ${to}`)
+    const result = await response.json()
+    console.log(`Email sent successfully to ${to} (Bird transmission: ${result.results?.id})`)
     return true
   } catch (error) {
     console.error('Email send error:', error)
-    if (error && typeof error === 'object' && 'response' in error) {
-      const sgError = error as { response?: { body?: unknown } }
-      console.error('SendGrid error details:', sgError.response?.body)
-    }
     return false
   }
 }

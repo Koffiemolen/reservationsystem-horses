@@ -56,13 +56,12 @@ export async function testEmailConnection(testEmail: string): Promise<EmailTestR
       testTime: new Date(),
     })
 
-    const hasApiKey = !!process.env.SENDGRID_API_KEY
-    const isProduction = process.env.NODE_ENV === 'production'
+    const hasApiKey = !!process.env.EMAIL_API_KEY
 
     return {
       success: result,
-      provider: hasApiKey ? 'SendGrid' : 'Console',
-      mode: isProduction && hasApiKey ? 'Productie' : 'Ontwikkeling (console)',
+      provider: hasApiKey ? 'Bird' : 'Console',
+      mode: hasApiKey ? 'Productie (Bird)' : 'Console (geen API key)',
       timestamp: new Date(),
     }
   } catch (error) {
@@ -79,8 +78,8 @@ export async function testEmailConnection(testEmail: string): Promise<EmailTestR
 export async function getSystemConfig(): Promise<SystemConfig> {
   return {
     environment: process.env.NODE_ENV || 'development',
-    emailProvider: process.env.SENDGRID_API_KEY ? 'SendGrid' : 'Console (geen API key)',
-    emailConfigured: !!process.env.SENDGRID_API_KEY,
+    emailProvider: process.env.EMAIL_API_KEY ? 'Bird' : 'Console (geen API key)',
+    emailConfigured: !!process.env.EMAIL_API_KEY,
     databaseType: 'SQLite',
     csrfEnabled: process.env.DISABLE_CSRF !== 'true',
     rateLimitEnabled: process.env.DISABLE_RATE_LIMIT !== 'true',

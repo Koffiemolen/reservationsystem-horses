@@ -114,7 +114,7 @@ Store all times as ISO 8601 strings in database. Display in `Europe/Amsterdam` t
 
 ### Email System
 
-Emails sent via SendGrid service (`src/services/email.service.ts`):
+Emails sent via Bird Email API (`src/services/email.service.ts`):
 - Reservation confirmation
 - Reservation cancellation
 - Password reset
@@ -122,11 +122,11 @@ Emails sent via SendGrid service (`src/services/email.service.ts`):
 - Block notification (when a new block impacts existing reservations — sent per affected user, grouping their affected reservations)
 
 **Configuration**:
-- Set `SENDGRID_API_KEY` in `.env` for production email sending
-- Set `EMAIL_FROM` to specify the sender address (must be verified in SendGrid)
-- In development, emails are logged to console if `SENDGRID_API_KEY` is not set or `NODE_ENV !== 'production'`
+- Set `EMAIL_API_KEY` in `.env` for production email sending (Bird API access key)
+- Set `EMAIL_FROM` to specify the sender address (must be verified in Bird)
+- In development, emails are logged to console if `EMAIL_API_KEY` is not set or `NODE_ENV !== 'production'`
 
-**Sender Verification**: Before production use, verify the sender email address in SendGrid Dashboard → Settings → Sender Authentication.
+**Sender Verification**: Before production use, verify the sender email domain in Bird Dashboard.
 
 ## Project Structure
 

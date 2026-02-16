@@ -60,9 +60,9 @@ Een modern reserveringssysteem voor Stichting Manege de Raam, gebouwd met Next.j
    AUTH_SECRET="your-secret-key-here"
    NEXTAUTH_URL="http://localhost:3000"
 
-   # Optioneel: Email (SendGrid)
-   SENDGRID_API_KEY="SG.xxxxxxxxxxxx"
-   EMAIL_FROM="noreply@stichtingderaam.nl"
+   # Optioneel: Email (Bird)
+   EMAIL_API_KEY="your-bird-api-key"
+   EMAIL_FROM="reserveringenderaam@stijvehark.nl"
    ```
 
 3. **Initialiseer de database**
@@ -168,13 +168,13 @@ npx prisma db seed   # Seed database met testdata
 
 In development worden emails gelogd naar de console. Voor productie:
 
-1. Maak een account aan bij [SendGrid](https://sendgrid.com)
+1. Maak een account aan bij [Bird](https://bird.com)
 2. Voeg je API key toe aan `.env`:
    ```env
-   SENDGRID_API_KEY="SG.xxxxxxxxxxxx"
-   EMAIL_FROM="noreply@stichtingderaam.nl"
+   EMAIL_API_KEY="your-bird-api-key"
+   EMAIL_FROM="reserveringenderaam@stijvehark.nl"
    ```
-3. Verifieer je sender email address in SendGrid Dashboard → Settings → Sender Authentication
+3. Verifieer je sender email domein in Bird Dashboard
 
 Email templates:
 - Welkom email bij registratie
