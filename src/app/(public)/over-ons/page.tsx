@@ -201,7 +201,7 @@ export default function OverOnsPage() {
                 Nicole van Schaik
               </h3>
               <p className="text-[var(--earth-moss)] font-semibold mb-3">
-                Secretaris & Penningmesteres
+                Secretaris & Penningmeester
               </p>
               <p className="text-[var(--earth-bark)] mb-3 leading-relaxed">
                 Coördineert wedstrijden en behandelt verzoeken voor
@@ -215,7 +215,7 @@ export default function OverOnsPage() {
             <p className="text-[var(--earth-bark)] leading-relaxed">
               Wij bedanken alle vrijwilligers die de manege netjes houden, de
               wedstrijden organiseren en ervoor zorgen dat het gezellig is in
-              de kantine. Elke woensdagmiddag (13:00 – 14:00) is er een vast
+              de kantine. Elke vrijdagmiddag (13:00 – 14:00) is er een vast
               moment voor onderhoud door het vrijwilligersteam.
             </p>
           </div>

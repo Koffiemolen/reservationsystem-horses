@@ -96,7 +96,7 @@ export default function VerhuurPage() {
               Rijhal Verhuur
             </h2>
             <p className="text-[var(--earth-bark)] mb-8">
-              Binnenrijhal en buitenbak beschikbaar voor individuele huur en passes
+              Binnenrijhal en buitenbak beschikbaar voor individuele huur en passe-partouts
             </p>
 
             <table className="pricing-table">
@@ -119,7 +119,7 @@ export default function VerhuurPage() {
                   <td className="text-[var(--earth-bark)]/50">—</td>
                 </tr>
                 <tr>
-                  <td className="text-[var(--earth-bark)]">Winterpass (1 okt – 1 apr)</td>
+                  <td className="text-[var(--earth-bark)]">Winter passe-partout (1 okt – 1 apr)</td>
                   <td className="text-[var(--earth-bark)] font-semibold">€250</td>
                   <td className="text-[var(--earth-bark)] font-semibold">€25</td>
                 </tr>
@@ -129,7 +129,7 @@ export default function VerhuurPage() {
                   <td className="text-[var(--earth-bark)]/50">—</td>
                 </tr>
                 <tr>
-                  <td className="text-[var(--earth-bark)]">Zomerpass (1 apr – 1 okt)</td>
+                  <td className="text-[var(--earth-bark)]">Zomer passe-partout (1 apr – 1 okt)</td>
                   <td className="text-[var(--earth-bark)] font-semibold">€150</td>
                   <td className="text-[var(--earth-bark)] font-semibold">€25</td>
                 </tr>
@@ -139,7 +139,7 @@ export default function VerhuurPage() {
                   <td className="text-[var(--earth-bark)]/50">—</td>
                 </tr>
                 <tr>
-                  <td className="text-[var(--earth-bark)]">Maandpass</td>
+                  <td className="text-[var(--earth-bark)]">Maand passe-partouts</td>
                   <td className="text-[var(--earth-bark)] font-semibold">€60</td>
                   <td className="text-[var(--earth-bark)] font-semibold">€25</td>
                 </tr>
@@ -159,7 +159,7 @@ export default function VerhuurPage() {
                 <strong>Losse huur:</strong> Annemarie van den Hurk — <ObfuscatedContact parts={['0499', '-', '423689', ' / ', '06', '-', '13208923']} type="phone" className="text-[var(--earth-bark)]" />
               </p>
               <p className="text-sm text-[var(--earth-bark)]">
-                <strong>Passes:</strong> Nicole van Schaik — <ObfuscatedContact parts={['06', '-', '27395416']} type="phone" className="text-[var(--earth-bark)]" />
+                <strong>Passe-partouts:</strong> Nicole van Schaik — <ObfuscatedContact parts={['06', '-', '27395416']} type="phone" className="text-[var(--earth-bark)]" />
               </p>
             </div>
           </div>

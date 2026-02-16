@@ -204,8 +204,8 @@ export default function HomePage() {
               <span className="italic text-[var(--earth-sand)]">D'n Perdenbak</span>
             </h1>
             <p className="text-xl md:text-2xl max-w-2xl mx-auto mb-12 leading-relaxed text-white/90 drop-shadow-md">
-              Een harmonieuze plek waar paarden en ruiters samenkomen in de
-              sereniteit van de Brabantse natuur
+              Een plek waar paarden en ruiters samenkomen
+              Paarden liefhebbers weten hoe geluk ruikt
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a href="/login" className="organic-btn !bg-white/20 !border-white/30 !text-white backdrop-blur-sm hover:!bg-white/30">
@@ -292,7 +292,7 @@ export default function HomePage() {
           <div className="grid md:grid-cols-2 gap-16 items-center">
             <div className="order-2 md:order-1">
               <h2 className="organic-title text-5xl md:text-6xl mb-6 text-[var(--earth-forest)]">
-                Premium faciliteiten
+                Faciliteiten
               </h2>
               <p className="text-lg mb-8 text-[var(--earth-bark)] leading-relaxed">
                 Onze binnenrijhal van 25×50 meter met professionele Equisport zandboden
