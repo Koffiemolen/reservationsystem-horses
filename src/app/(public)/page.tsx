@@ -1,6 +1,7 @@
 'use client'
 
 import { ArrowRight, Calendar, Clock, Leaf, MapPin, Mail, Sparkles, Users } from 'lucide-react'
+import Image from 'next/image'
 import Link from 'next/link'
 import { WatermarkedImage } from '@/components/ui/WatermarkedImage'
 
@@ -175,42 +176,48 @@ export default function HomePage() {
       </div>
 
       {/* Hero */}
-      <section id="welkom" className="relative min-h-screen flex items-center justify-center py-20 px-6 overflow-hidden">
-        <div className="max-w-6xl mx-auto relative z-10">
+      <section id="welkom" className="relative min-h-screen flex items-center justify-center overflow-hidden">
+        {/* Background image */}
+        <Image
+          src="/images/hero-main.jpg"
+          alt="Binnenrijhal Manege D'n Perdenbak"
+          fill
+          priority
+          className="object-cover"
+          sizes="100vw"
+        />
+
+        {/* Dark gradient overlay for text readability */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/70" />
+
+        {/* Subtle warm tint overlay */}
+        <div className="absolute inset-0 bg-[var(--earth-forest)]/20 mix-blend-multiply" />
+
+        <div className="max-w-6xl mx-auto relative z-10 px-6 py-20">
           <div className="text-center fade-in-up">
-            <div className="inline-flex items-center gap-2 mb-6 px-4 py-2 rounded-full bg-white/50 backdrop-blur-sm">
-              <Sparkles size={16} className="text-[var(--earth-moss)]" />
-              <span className="text-sm font-semibold text-[var(--earth-forest)]">Sinds 1998</span>
+            <div className="inline-flex items-center gap-2 mb-6 px-4 py-2 rounded-full bg-white/15 backdrop-blur-md border border-white/20">
+              <Sparkles size={16} className="text-[var(--earth-sand)]" />
+              <span className="text-sm font-semibold text-white/90">Sinds 1998</span>
             </div>
-            <h1 className="organic-title text-7xl md:text-9xl mb-8 text-[var(--earth-forest)] leading-none">
+            <h1 className="organic-title text-7xl md:text-9xl mb-8 text-white leading-none drop-shadow-lg">
               Manege<br />
-              <span className="italic">D'n Perdenbak</span>
+              <span className="italic text-[var(--earth-sand)]">D'n Perdenbak</span>
             </h1>
-            <p className="text-xl md:text-2xl max-w-2xl mx-auto mb-12 leading-relaxed text-[var(--earth-bark)]">
+            <p className="text-xl md:text-2xl max-w-2xl mx-auto mb-12 leading-relaxed text-white/90 drop-shadow-md">
               Een harmonieuze plek waar paarden en ruiters samenkomen in de
               sereniteit van de Brabantse natuur
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a href="/login" className="organic-btn">
+              <a href="/login" className="organic-btn !bg-white/20 !border-white/30 !text-white backdrop-blur-sm hover:!bg-white/30">
                 Inloggen
                 <ArrowRight size={20} />
               </a>
-              <a href="/register" className="organic-btn organic-btn-outline">
+              <a href="/register" className="organic-btn !bg-[var(--earth-moss)] !border-[var(--earth-moss)] !text-white hover:!bg-[var(--earth-forest)]">
                 Account aanmaken
               </a>
             </div>
           </div>
         </div>
-
-        {/* Organic shape background */}
-        <div
-          className="absolute top-1/4 right-0 w-96 h-96 organic-blob opacity-10"
-          style={{ background: 'var(--earth-moss)' }}
-        />
-        <div
-          className="absolute bottom-1/4 left-0 w-80 h-80 organic-blob opacity-10"
-          style={{ background: 'var(--earth-clay)', animationDelay: '2s' }}
-        />
       </section>
 
       {/* Wave divider */}
