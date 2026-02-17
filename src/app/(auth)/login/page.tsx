@@ -113,7 +113,7 @@ function LoginForm() {
           </Button>
           <p className="text-sm text-muted-foreground text-center">
             Nog geen account?{' '}
-            <Link href="/registreren" className="text-primary hover:underline">
+            <Link href="/register" className="text-primary hover:underline">
               Registreer
             </Link>
           </p>
