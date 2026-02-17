@@ -6,9 +6,9 @@ import { generateCsrfToken, createCsrfCookies } from '@/lib/csrf'
 // Paths that require authentication
 const protectedPaths = ['/agenda', '/profiel', '/reserveringen']
 const adminPaths = ['/admin']
-const authPaths = ['/login', '/registreren', '/wachtwoord-vergeten', '/wachtwoord-reset']
+const authPaths = ['/login', '/register', '/wachtwoord-vergeten', '/wachtwoord-reset']
 
-export default auth(async function proxy(request: NextRequest) {
+export default auth(async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   // Get session from auth
