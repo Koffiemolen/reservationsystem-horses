@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+Disallow: /login
+Disallow: /register
+Disallow: /wachtwoord-vergeten
+Disallow: /wachtwoord-reset
+Disallow: /api/
+Disallow: /admin/
+Disallow: /agenda
+Disallow: /reserveringen
+Disallow: /profiel
