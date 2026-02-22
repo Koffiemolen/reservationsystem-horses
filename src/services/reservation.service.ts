@@ -316,7 +316,8 @@ export async function getReservationsForCalendar(
     orderBy: { startTime: 'asc' },
   })
 
-  // Format reservations for calendar, hiding personal info for non-owners
+  // Format reservations for calendar — show names for all (small community),
+  // but keep notes private to the reservation owner
   return reservations.map((r) => ({
     id: r.id,
     startTime: r.startTime,
@@ -324,7 +325,7 @@ export async function getReservationsForCalendar(
     purpose: r.purpose,
     status: r.status,
     isOwn: r.userId === currentUserId,
-    userName: r.userId === currentUserId ? r.user.name : undefined,
+    userName: r.user.name,
     notes: r.userId === currentUserId ? r.notes : undefined,
   }))
 }

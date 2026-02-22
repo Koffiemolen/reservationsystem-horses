@@ -24,6 +24,12 @@ interface MonthViewProps {
 
 const WEEKDAYS = ['Ma', 'Di', 'Wo', 'Do', 'Vr', 'Za', 'Zo']
 
+const PURPOSE_DOT_COLORS: Record<string, string> = {
+  TRAINING: 'bg-emerald-500',
+  LESSON: 'bg-amber-500',
+  OTHER: 'bg-stone-400',
+}
+
 export function MonthView({
   currentDate,
   dateRange,
@@ -114,24 +120,26 @@ export function MonthView({
                     </span>
 
                     <div className="flex-1 overflow-hidden mt-1 space-y-0.5">
-                      {dayEvents.slice(0, 3).map((event) => (
-                        <div
-                          key={event.id}
-                          className={cn(
-                            'text-xs px-1 py-0.5 rounded truncate',
-                            event.isOwn
-                              ? 'bg-primary text-primary-foreground'
-                              : 'bg-muted text-muted-foreground'
-                          )}
-                          title={`${format(new Date(event.startTime), 'HH:mm')} - ${PURPOSE_LABELS[event.purpose] || event.purpose}`}
-                        >
-                          {format(new Date(event.startTime), 'HH:mm')}{' '}
-                          {event.isOwn && (event.notes?.slice(0, 10) || PURPOSE_LABELS[event.purpose])}
-                          {!event.isOwn && 'Gereserveerd'}
-                        </div>
-                      ))}
+                      {dayEvents.slice(0, 3).map((event) => {
+                        const dotColor = PURPOSE_DOT_COLORS[event.purpose] || PURPOSE_DOT_COLORS.OTHER
+                        return (
+                          <div
+                            key={event.id}
+                            className="flex items-center gap-1 text-xs px-1 py-0.5 rounded truncate group"
+                            title={`${format(new Date(event.startTime), 'HH:mm')} – ${format(new Date(event.endTime), 'HH:mm')}: ${event.userName || 'Gereserveerd'} (${PURPOSE_LABELS[event.purpose] || event.purpose})`}
+                          >
+                            <span className={cn('w-1.5 h-1.5 rounded-full flex-shrink-0', dotColor)} />
+                            <span className="font-medium text-muted-foreground truncate">
+                              {format(new Date(event.startTime), 'HH:mm')}
+                            </span>
+                            <span className="truncate text-foreground/80">
+                              {event.userName || PURPOSE_LABELS[event.purpose]}
+                            </span>
+                          </div>
+                        )
+                      })}
                       {dayEvents.length > 3 && (
-                        <div className="text-xs text-muted-foreground px-1">
+                        <div className="text-xs text-muted-foreground px-1 font-medium">
                           +{dayEvents.length - 3} meer
                         </div>
                       )}

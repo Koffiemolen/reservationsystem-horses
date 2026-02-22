@@ -77,7 +77,7 @@ if (conflicts.length > 0 && !confirmConflicts) {
 
 When a block is **deleted**, all IMPACTED reservations overlapping that block are automatically restored to CONFIRMED.
 
-**Privacy**: Calendar shows other users' reservations as "Reserved" without names/details. Only show full details for the current user's own reservations.
+**Privacy**: Calendar shows user names and purpose for all reservations (small community model). Notes remain private — only shown for the current user's own reservations.
 
 ```typescript
 // src/services/reservation.service.ts — getReservationsForCalendar
@@ -87,7 +87,7 @@ return reservations.map((r) => ({
   endTime: r.endTime,
   purpose: r.purpose,
   isOwn: r.userId === currentUserId,
-  userName: r.userId === currentUserId ? r.user.name : undefined,  // Hidden for others
+  userName: r.user.name,                                           // Visible to all
   notes: r.userId === currentUserId ? r.notes : undefined,        // Hidden for others
 }))
 ```
